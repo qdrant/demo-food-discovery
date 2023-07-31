@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "food-discovery-backend"
+version = "1.0.0"
+description = ""
+authors = ["Kacper Łukawski <kacper.lukawski@qdrant.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+jupyter = "^1.0.0"
+fastapi = "^0.100.1"
+qdrant-client = "^1.3.2"
+uvicorn = "^0.23.2"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
