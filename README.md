@@ -29,7 +29,7 @@ We do not vectorize queries during the search, but rather use the same embedding
 were used during the indexing. Thus, there is no vectorization overhead during the 
 search, what makes it very fast.
 
-<video src="images/food-discovery-demo.mp4" width="990"></video>
+https://github.com/qdrant/demo-food-discovery/assets/2649301/fdee50db-67e4-408c-8252-9f505f45bb12
 
 ## Architecture
 
