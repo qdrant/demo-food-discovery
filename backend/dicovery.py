@@ -4,6 +4,7 @@ import numpy as np
 from typing import List
 
 from qdrant_client import QdrantClient, models
+from qdrant_client.http.exceptions import UnexpectedResponse
 
 import settings
 
@@ -12,9 +13,6 @@ client = QdrantClient(
     settings.QDRANT_URL,
     api_key=settings.QDRANT_API_KEY,
 )
-
-# Retrieve the collection info to know the dimension of the vectors
-collection_info = client.get_collection(settings.QDRANT_COLLECTION)
 
 
 def choose_random_points(limit: int):
@@ -25,7 +23,13 @@ def choose_random_points(limit: int):
     :param limit:
     :return:
     """
-    vector_size = collection_info.config.params.vectors.size
+    try:
+        # Retrieve the collection info to know the dimension of the vectors
+        collection_info = client.get_collection(settings.QDRANT_COLLECTION)
+        vector_size = collection_info.config.params.vectors.size
+    except UnexpectedResponse:
+        # If the collection does not exist, return an empty list of points
+        return []
 
     random_points = 2.0 * np.random.random((limit, vector_size)) - 1.0
 

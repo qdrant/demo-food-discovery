@@ -3,6 +3,7 @@ services:
   backend:
     build: ./backend
     env_file: .env
+    restart: always
 
   frontend:
     build: ./frontend
@@ -12,3 +13,11 @@ services:
       - backend
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+    restart: always
+
+  qdrant:
+    image: qdrant/qdrant:v1.3.2
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+    profiles:
+      - local
