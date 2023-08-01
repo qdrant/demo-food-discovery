@@ -188,4 +188,14 @@ Some of the links to the resources that were useful during the development:
 
 ## Futher steps
 
+If you want to continue working on this demo, here are some ideas for the next steps:
 
+1. Use some additional payload properties and allow filtering by them. It may require
+   setting up some [payload indexes](https://qdrant.tech/documentation/concepts/payload/#payload-indexing) 
+   and definitely some UI changes.
+2. Play with collection configuration to improve the search quality, reduce the latency,
+   and/or reduce the memory footprint, as described in the
+   [Optimize Qdrant tutorial](https://qdrant.tech/documentation/tutorials/optimize/#optimize-qdrant).
+3. Experiment with different models and see how they affect the search results.
+4. Consider fine-tuning CLIP model on a food-specific dataset to see how it may improve
+   the search quality.
