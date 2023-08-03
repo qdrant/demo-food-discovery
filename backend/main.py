@@ -1,8 +1,11 @@
+import os
 from typing import List
 
 import logging
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+
 from qdrant_client.http.exceptions import UnexpectedResponse
 from starlette.middleware.cors import CORSMiddleware
 
@@ -24,8 +27,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+static_dir = os.path.join(settings.BACKEND_DIR, 'build')
 
-@app.post("/search")
+if os.path.exists(static_dir):
+    app.mount("/", StaticFiles(directory=static_dir, html=True))
+
+
+@app.post("/api/search")
 def search(
     positive: List[str], negative: List[str], limit: int = settings.DEFAULT_LIMIT
 ) -> List[Product]:

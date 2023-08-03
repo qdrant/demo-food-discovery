@@ -30,7 +30,7 @@ export default function App() {
                 <div className="page-body">
                     <div className="container-xl">
                         <Filters />
-                        <h2 className="page-title-lg">Search results</h2>
+                        <h2 className="page-title-lg">Recommendation results</h2>
                         <p>Select food items you like and dislike to improve your search
                             results.</p>
                         <Results/>
