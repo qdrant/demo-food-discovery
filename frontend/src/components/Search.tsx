@@ -20,13 +20,15 @@ import {
 
 
 const FilterPlaceholder = () => {
+    const placeholderImg: string = "https://placehold.co/210x90/ecedef/667382/png?text=%2B";
     return (
-        <div className="col-sm-2 placeholder-glow">
-            <div className="card opacity-40">
+        <div className="col-sm-2">
+            <div className="card">
                 <div
-                    className="img-responsive img-responsive-21x9 card-img-top placeholder"></div>
-                <div className="card-body">
-                    <h3 className="card-title placeholder"></h3>
+                    className="img-responsive img-responsive-21x9 card-img-top"
+                    style={{backgroundImage: `url(${placeholderImg})`}}></div>
+                <div className="card-body opacity-40">
+                    <h3 className="card-title placeholder cursor-default"></h3>
                 </div>
             </div>
         </div>
