@@ -5,16 +5,6 @@ services:
     env_file: .env
     restart: always
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-    restart: always
-
   qdrant:
     image: qdrant/qdrant:v1.3.2
     ports:
