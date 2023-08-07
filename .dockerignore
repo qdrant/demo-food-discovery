@@ -15,3 +15,14 @@ coverage.xml
 .mypy_cache
 .pytest_cache
 .hypothesis
+**/node_modules/
+**/dist
+**/build
+.git
+npm-debug.log
+.coverage
+.coverage.*
+.env
+.aws
+
+notebooks/

@@ -17,4 +17,3 @@ QDRANT_COLLECTION = os.environ.get("QDRANT_COLLECTION", "products")
 # Search configuration
 MAX_SEARCH_LIMIT = 100
 DEFAULT_LIMIT = 12
-

@@ -9,8 +9,13 @@ from fastapi.staticfiles import StaticFiles
 from qdrant_client.http.exceptions import UnexpectedResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from dicovery import choose_random_points, handle_negative_ids, recommend_by_ids
-from models import Product
+from discovery import (
+    handle_text_search,
+    choose_random_points,
+    handle_negative_ids,
+    recommend_by_ids,
+)
+from models import SearchQuery, Product
 
 import settings
 
@@ -27,39 +32,38 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-static_dir = os.path.join(settings.BACKEND_DIR, 'build')
-
-if os.path.exists(static_dir):
-    app.mount("/", StaticFiles(directory=static_dir, html=True))
-
 
 @app.post("/api/search")
-def search(
-    positive: List[str], negative: List[str], limit: int = settings.DEFAULT_LIMIT
-) -> List[Product]:
+def search(search_query: SearchQuery) -> List[Product]:
     """
     Search for products by ids of the liked and disliked products.
+    :param query: text query
     :param positive: ids of the liked products
     :param negative: ids of the disliked products
     :param limit: number of products to return
     :return:
     """
-    limit = min(limit, settings.MAX_SEARCH_LIMIT)
+    positive = search_query.positive or []
+    negative = search_query.negative or []
+    limit = min(search_query.limit, settings.MAX_SEARCH_LIMIT)
     logger.debug(
         "Search request: positive=%s, negative=%s, limit=%d", positive, negative, limit
     )
     try:
-        if len(positive) == 0 and len(negative) == 0:
+        if search_query.query:
+            # If a text query is provided, search for the products by the query
+            points = handle_text_search(search_query)
+        elif len(positive) == 0 and len(negative) == 0:
             # If no ids are provided, return random products
-            points = choose_random_points(limit)
+            points = choose_random_points(search_query)
         elif len(positive) == 0 and len(negative) > 0:
             # If only disliked products are provided, we cannot use the recommendation
             # API directly, so it has to be handled separately
-            points = handle_negative_ids(negative, limit)
+            points = handle_negative_ids(search_query)
         else:
             # Search for the products similar to the liked ones and dissimilar to the
             # disliked ones
-            points = recommend_by_ids(positive, negative, limit)
+            points = recommend_by_ids(search_query)
 
         return [
             Product(
@@ -74,3 +78,9 @@ def search(
         # Handle the case when Qdrant returns an error and convert it to an exception
         # that FastAPI will understand and return to the client
         raise HTTPException(status_code=500, detail=e.reason_phrase)
+
+
+# Mount the static files directory once the search endpoint is defined
+static_dir = os.path.join(settings.BACKEND_DIR, "build")
+if os.path.exists(static_dir):
+    app.mount("/", StaticFiles(directory=static_dir, html=True))

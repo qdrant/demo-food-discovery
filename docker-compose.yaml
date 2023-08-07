@@ -1,15 +1,22 @@
 services:
 
   backend:
-    build: ./backend
+    build: .
     env_file: .env
     restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - models_cache:/models_cache
 
   qdrant:
-    image: qdrant/qdrant:v1.3.2
+    image: qdrant/qdrant:v1.4.0
     ports:
       - "6333:6333"
     volumes:
       - ./qdrant_data:/qdrant/storage
     profiles:
       - local
+
+volumes:
+  models_cache:
