@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 import settings
 
@@ -15,8 +15,7 @@ class SearchQuery(BaseModel):
     location: Optional[Location] = None
     positive: Optional[List[str]] = None
     negative: Optional[List[str]] = None
-    limit: int = settings.DEFAULT_LIMIT
-
+    limit: int = Field(settings.DEFAULT_LIMIT, ge=1, le=settings.MAX_SEARCH_LIMIT)
 
 
 class Product(BaseModel):

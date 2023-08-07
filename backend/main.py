@@ -37,18 +37,12 @@ app.add_middleware(
 def search(search_query: SearchQuery) -> List[Product]:
     """
     Search for products by ids of the liked and disliked products.
-    :param query: text query
-    :param positive: ids of the liked products
-    :param negative: ids of the disliked products
-    :param limit: number of products to return
+    :param search_query: search query parameters
     :return:
     """
     positive = search_query.positive or []
     negative = search_query.negative or []
-    limit = min(search_query.limit, settings.MAX_SEARCH_LIMIT)
-    logger.debug(
-        "Search request: positive=%s, negative=%s, limit=%d", positive, negative, limit
-    )
+
     try:
         if search_query.query:
             # If a text query is provided, search for the products by the query
