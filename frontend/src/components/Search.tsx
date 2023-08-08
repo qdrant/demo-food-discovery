@@ -17,6 +17,7 @@ import {
     ResultContext,
     SearchContext
 } from "../context/Search";
+import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 
 
 const FilterPlaceholder = () => {
@@ -94,13 +95,14 @@ export const Filters = () => {
 const Result = () => {
     const searchState: ISearchState = useContext(SearchContext);
     const result: ISearchResult = useContext(ResultContext);
+    const [openInfoModal, setOpenInfoModal] = React.useState(false);
 
     return <div className="col-sm-3 border-2">
         <div className="card">
             <div className="img-responsive img-responsive-21x9 card-img-top"
                  style={{backgroundImage: `url(${result.productImageUrl})`}}></div>
             <div className="card-body">
-                <h3 className="card-title">{result.productName}</h3>
+                <h3 className="card-title cursor-pointer" onClick={() => setOpenInfoModal(true)}>{result.productName}</h3>
                 <p className="text-muted text-truncate small" data-bs-toggle="tooltip"
                    title={result.productDescription}>
                     {result.productDescription}
@@ -132,6 +134,7 @@ const Result = () => {
                     </span>
                 </button>
             </div>
+            <InfoModal info={result} open={openInfoModal} onClose={() => setOpenInfoModal(false)}/>
         </div>
     </div>
 };
@@ -149,4 +152,29 @@ export const Results = () => {
             {products}
         </div>
     )
+}
+
+interface IInfoModal {
+    info: ISearchResult;
+    open: boolean;
+    onClose: () => void;
+}
+export const InfoModal: React.FC<IInfoModal> = ({info, open, onClose}) => {
+
+    return (
+      <Modal open={open} onClose={onClose}>
+          <ModalBody>
+              <div className="img-responsive img-responsive-21x9 mb-4"
+                   style={{backgroundImage: `url(${info.productImageUrl})`}}></div>
+              <h3>{info.productName}</h3>
+              <p>{info.productDescription}</p>
+          </ModalBody>
+          <ModalFooter>
+              <button className="btn btn-link link-secondary" onClick={onClose}>
+                  Cancel
+              </button>
+          </ModalFooter>
+      </Modal>
+    )
+
 }

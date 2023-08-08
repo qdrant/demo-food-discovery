@@ -22,7 +22,7 @@ export interface IModalFooter {
 }
 
 const StyledTextSearchModal = styled.dialog`
-  width: 60vw;
+  width: 50vw;
   border: none;
 
   &::backdrop {
