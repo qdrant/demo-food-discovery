@@ -40,7 +40,6 @@ The demo consists of the following components:
 - [React frontend](/frontend) - a web application that allows the user to interact with the demo
 - [FastAPI backend](/backend) - a backend that communicates with Qdrant and exposes a REST API
 - [Qdrant](https://qdrant.tech/) - a vector search engine that stores the data and performs the search
-- [Caddy webserver](https://caddyserver.com/) - a reverse proxy that allows to serve the frontend and the backend
 
 All the components come pre-configured and can be run with a single command. 
 

@@ -8,6 +8,7 @@ import settings
 class Location(BaseModel):
     latitude: float
     longitude: float
+    radius_km: float
 
 
 class SearchQuery(BaseModel):

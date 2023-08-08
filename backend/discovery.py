@@ -7,17 +7,34 @@ from sentence_transformers import SentenceTransformer
 
 import settings
 
-from models import SearchQuery
+from models import SearchQuery, Location
 
 # Create a client to interact with Qdrant
 client = QdrantClient(
     settings.QDRANT_URL,
     api_key=settings.QDRANT_API_KEY,
-    timeout=30,
+    timeout=60,
 )
 
 # Load the embeddings model
 model = SentenceTransformer("clip-ViT-B-32", device="cpu", cache_folder="/models_cache")
+
+
+def create_location_filter(location: Location) -> models.Filter:
+    return models.Filter(
+        must=[
+            models.FieldCondition(
+                key="cafe.location",
+                geo_radius=models.GeoRadius(
+                    center=models.GeoPoint(
+                        lon=location.longitude,
+                        lat=location.latitude,
+                    ),
+                    radius=location.radius_km * 1000,
+                )
+            )
+        ]
+    )
 
 
 def handle_text_search(search_query: SearchQuery):
@@ -29,17 +46,20 @@ def handle_text_search(search_query: SearchQuery):
     :return:
     """
     query_vector = model.encode(search_query.query).tolist()
+    query_filter = (
+        create_location_filter(search_query.location)
+        if search_query.location is not None
+        else None
+    )
     response = client.search_groups(
         settings.QDRANT_COLLECTION,
         query_vector=query_vector,
         group_by=settings.GROUP_BY_FIELD,
+        query_filter=query_filter,
         limit=search_query.limit,
     )
     return list(
-        itertools.chain.from_iterable([
-            group.hits
-            for group in response.groups
-        ])
+        itertools.chain.from_iterable([group.hits for group in response.groups])
     )
 
 
@@ -61,10 +81,17 @@ def choose_random_points(search_query: SearchQuery):
 
     random_points = 2.0 * np.random.random((search_query.limit, vector_size)) - 1.0
 
+    query_filter = (
+        create_location_filter(search_query.location)
+        if search_query.location is not None
+        else None
+    )
     results = client.search_batch(
         settings.QDRANT_COLLECTION,
         requests=[
-            models.SearchRequest(vector=point.tolist(), limit=1, with_payload=True)
+            models.SearchRequest(
+                vector=point.tolist(), filter=query_filter, limit=1, with_payload=True
+            )
             for point in random_points
         ],
     )
@@ -100,17 +127,20 @@ def handle_negative_ids(search_query: SearchQuery):
     mean_vector = np.mean(disliked_vectors, axis=0)
     negated_vector = -mean_vector
 
+    query_filter = (
+        create_location_filter(search_query.location)
+        if search_query.location is not None
+        else None
+    )
     response = client.search_groups(
         settings.QDRANT_COLLECTION,
         query_vector=negated_vector.tolist(),
         group_by=settings.GROUP_BY_FIELD,
+        query_filter=query_filter,
         limit=search_query.limit,
     )
     return list(
-        itertools.chain.from_iterable([
-            group.hits
-            for group in response.groups
-        ])
+        itertools.chain.from_iterable([group.hits for group in response.groups])
     )
 
 
@@ -126,16 +156,19 @@ def recommend_by_ids(search_query: SearchQuery):
     :param search_query: search query
     :return:
     """
+    query_filter = (
+        create_location_filter(search_query.location)
+        if search_query.location is not None
+        else None
+    )
     response = client.recommend_groups(
         settings.QDRANT_COLLECTION,
         positive=search_query.positive,
         negative=search_query.negative,
         group_by=settings.GROUP_BY_FIELD,
+        query_filter=query_filter,
         limit=search_query.limit,
     )
     return list(
-        itertools.chain.from_iterable([
-            group.hits
-            for group in response.groups
-        ])
+        itertools.chain.from_iterable([group.hits for group in response.groups])
     )
