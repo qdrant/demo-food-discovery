@@ -18,6 +18,7 @@ import {
     SearchContext
 } from "../context/Search";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
+import styled from "styled-components";
 
 
 const FilterPlaceholder = () => {
@@ -68,6 +69,16 @@ const Filter = () => {
     )
 }
 
+const FiltersWrapper = styled.div.attrs(props => ({
+    id: props.id,
+    className: props.className
+}))<{ $className?: string }>`
+    border: 2px dashed #e3e6f0;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    background: #fff;
+    min-height: 180px;
+`
 
 export const Filters = () => {
     const searchState: ISearchState = useContext(SearchContext);
@@ -80,15 +91,13 @@ export const Filters = () => {
         )
     });
 
-    const placeholders = Array(Math.max(0, 6 - searchState.filters.length)).fill(0).map((_, i) =>
-        <FilterPlaceholder key={`placeholder-${i}`}/>);
-
     return (
-        <div id="search-filters"
-             className="row row-deck row-cards mb-4 flex-nowrap scrollable scroll-x">
-            {filters}
-            {placeholders}
-        </div>
+      <FiltersWrapper
+        id="search-filters"
+        className="row row-deck pb-3 mx-0 row-cards mb-4 flex-nowrap scrollable scroll-x">
+          {filters}
+          {filters.length === 0 && <div className="m-auto text-center">Here we will show your likes and dislikes</div>}
+      </FiltersWrapper>
     )
 }
 
@@ -176,5 +185,4 @@ export const InfoModal: React.FC<IInfoModal> = ({info, open, onClose}) => {
           </ModalFooter>
       </Modal>
     )
-
 }

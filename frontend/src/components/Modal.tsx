@@ -4,7 +4,6 @@ import exp from "constants";
 
 export interface IModal {
   open: boolean;
-  onClose: () => void;
   children: React.ReactNode;
 }
 
@@ -56,7 +55,7 @@ export const ModalFooter: React.FC<IModalFooter> = ({children}) => {
   </div>
 }
 
-export const Modal: React.FC<IModal> = ({children, open, onClose}) => {
+export const Modal: React.FC<IModal> = ({children, open}) => {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
