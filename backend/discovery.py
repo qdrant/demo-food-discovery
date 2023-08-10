@@ -17,7 +17,7 @@ client = QdrantClient(
 )
 
 # Load the embeddings model
-model = SentenceTransformer("clip-ViT-B-32", device="cpu", cache_folder="/models_cache")
+model = SentenceTransformer("clip-ViT-B-32", device="cpu", cache_folder="./models_cache")
 
 
 def create_location_filter(location: Location) -> models.Filter:
