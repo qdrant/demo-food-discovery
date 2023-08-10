@@ -25,10 +25,14 @@ is used internally to find some other items that are visually similar to the lik
 and dissimilar to the disliked ones. All the components are enclosed in Docker Compose
 and can be run with a single command.
 
-Proposed mechanism is embedding-agnostic, so it can be used with any image embeddings.
-We do not vectorize queries during the search, but rather use the same embeddings that
-were used during the indexing. Thus, there is no vectorization overhead during the 
-search, what makes it very fast.
+On top of the positive and negative examples based search, you can also use a text query
+to filter the results based on the names of the dishes. The text query is vectorized
+with the same CLIP model and used in semantic search.
+
+Proposed mechanism is embedding-agnostic, so it can be used with any multimodal embeddings
+model. We only vectorize text queries during the search, but mostly use the same image 
+embeddings that were used during the indexing. Thus, there might no vectorization overhead 
+during the search, what makes it very fast.
 
 https://github.com/qdrant/demo-food-discovery/assets/2649301/fdee50db-67e4-408c-8252-9f505f45bb12
 
@@ -41,7 +45,9 @@ The demo consists of the following components:
 - [FastAPI backend](/backend) - a backend that communicates with Qdrant and exposes a REST API
 - [Qdrant](https://qdrant.tech/) - a vector search engine that stores the data and performs the search
 
-All the components come pre-configured and can be run with a single command. 
+All the components come pre-configured and can be run with a single command. The 
+[uvicorn](https://www.uvicorn.org/) webserver handles the communication between the
+user and the application.
 
 ## Usage
 
