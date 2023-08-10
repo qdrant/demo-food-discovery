@@ -185,7 +185,7 @@ Some of the links to the resources that were useful during the development:
 - https://tabler.io/docs/getting-started
 - https://qdrant.tech/documentation/concepts/snapshots/
 
-## Futher steps
+## Further steps
 
 If you want to continue working on this demo, here are some ideas for the next steps:
 

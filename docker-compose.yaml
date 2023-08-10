@@ -7,7 +7,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - models_cache:/models_cache
+      - models_cache:/app/models_cache
 
   qdrant:
     image: qdrant/qdrant:v1.4.0
