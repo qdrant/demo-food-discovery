@@ -5,7 +5,18 @@ export const SearchContextProvider = () => {
     const [results, setResults] = useState<ISearchResult[]>([]);
     const [filters, setFilters] = useState<ISearchFilter[]>([]);
 
-    const retrieveResults = () => {
+    const _mapProductsProperties = (products: any[]): ISearchResult[] => {
+        return products.map((product: any) => {
+            return {
+                productId: product.id,
+                productName: product.name,
+                productDescription: product.description,
+                productImageUrl: product.image_url,
+            }
+        });
+    }
+
+    const retrieveResults = (filters: ISearchFilter[]) => {
         const positiveIds = filters.filter(f => f.isPositive).map(f => f.productId);
         const negativeIds = filters.filter(f => !f.isPositive).map(f => f.productId);
 
@@ -25,45 +36,63 @@ export const SearchContextProvider = () => {
                 }
                 return response.json();
             })
-            .then(data => {
-                return data.map((d: any) => {
-                    return {
-                        productId: d.id,
-                        productName: d.name,
-                        productDescription: d.description,
-                        productImageUrl: d.image_url,
-                    }
-                })
-            })
+            .then(data => _mapProductsProperties(data))
             .then(setResults)
             .catch(error => console.error(error));
     }
 
-    const addFilter = (product: ISearchResult, isPositive: boolean): void => {
+    const addFilter = (product: ISearchResult, isPositive: boolean): ISearchFilter[] => {
         const newFilter = {isPositive, ...product};
         const filterExists = filters.some(f => {
             return f.productId === newFilter.productId && f.isPositive === newFilter.isPositive
         });
         if (filterExists) {
-            return;
+            return filters;
         }
 
         setFilters([newFilter, ...filters]);
+        return [newFilter, ...filters];
     }
 
-    const removeFilter = (filter: ISearchFilter): void => {
+    const removeFilter = (filter: ISearchFilter): ISearchFilter[] => {
         const newFilters = filters.filter(f => f !== filter);
         setFilters(newFilters);
+        return newFilters;
     }
 
-    const clearFilters = (): void => {
+    const clearFilters = (): [] => {
         setFilters([]);
+        return [];
     }
 
-    // Retrieve results when filters change
+    const textSearch = (query: string|null = null) => {
+
+        const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                query,
+                "positive": [],
+                "negative": [],
+            })
+        }
+
+        fetch("/api/search", requestOptions)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error("HTTP error " + response.json());
+              }
+              return response.json();
+          })
+          .then(data => _mapProductsProperties(data))
+          .then(setResults)
+          .catch(error => console.error(error));
+    }
+
+    // Retrieve initial results
     useEffect(() => {
-        retrieveResults();
-    }, [filters]);
+        retrieveResults(filters);
+    }, []);
 
     return {
         results,
@@ -71,6 +100,7 @@ export const SearchContextProvider = () => {
         addFilter,
         removeFilter,
         clearFilters,
+        retrieveResults,
+        textSearch,
     }
-
 };

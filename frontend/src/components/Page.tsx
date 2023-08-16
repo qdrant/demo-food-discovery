@@ -26,10 +26,14 @@ export const Header = () => {
 export const RefreshButton = () => {
     const searchState: ISearchState = useContext(SearchContext);
 
+    const handleRefresh = () => {
+        searchState.retrieveResults(searchState.clearFilters());
+    }
+
     return <div className="ribbon ribbon-top bg-orange">
         <button className="switch-icon" style={{"fontSize": "2em"}}>
             <span className="switch-icon-a text-white">
-                 <IconRefresh onClick={searchState.clearFilters} />
+                 <IconRefresh onClick={handleRefresh} />
             </span>
         </button>
     </div>

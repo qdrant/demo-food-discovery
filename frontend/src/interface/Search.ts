@@ -12,7 +12,9 @@ export interface ISearchFilter extends ISearchResult {
 export interface ISearchState {
     results: ISearchResult[];
     filters: ISearchFilter[];
-    removeFilter: (filter: ISearchFilter) => void;
-    addFilter: (product: ISearchResult, isPositive: boolean) => void;
-    clearFilters: () => void;
+    removeFilter: (filter: ISearchFilter) => ISearchFilter[];
+    addFilter: (product: ISearchResult, isPositive: boolean) => ISearchFilter[];
+    clearFilters: () => ISearchFilter[];
+    textSearch: (query: string|null) => void;
+    retrieveResults: (filters: ISearchFilter[]) => void;
 }

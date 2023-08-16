@@ -14,14 +14,14 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
   const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // TODO: implement
-    // searchState.textSearch(query);
+    searchState.clearFilters();
+    searchState.textSearch(query);
     onClose();
     setQuery("");
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open}>
       <ModalHeader
         title={"What are you looking for?"}
         actions={<button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>}/>
