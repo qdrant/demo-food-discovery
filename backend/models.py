@@ -1,8 +1,11 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from pydantic import BaseModel, Field
 
 import settings
+
+
+ProductId = Union[int, str]
 
 
 class Location(BaseModel):
@@ -14,13 +17,13 @@ class Location(BaseModel):
 class SearchQuery(BaseModel):
     query: Optional[str] = None
     location: Optional[Location] = None
-    positive: Optional[List[str]] = None
-    negative: Optional[List[str]] = None
+    positive: Optional[List[ProductId]] = None
+    negative: Optional[List[ProductId]] = None
     limit: int = Field(settings.DEFAULT_LIMIT, ge=1, le=settings.MAX_SEARCH_LIMIT)
 
 
 class Product(BaseModel):
-    id: str
+    id: ProductId
     name: str
     description: str
     image_url: str

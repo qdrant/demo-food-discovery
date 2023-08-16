@@ -71,6 +71,7 @@ def search(search_query: SearchQuery) -> List[Product]:
     except UnexpectedResponse as e:
         # Handle the case when Qdrant returns an error and convert it to an exception
         # that FastAPI will understand and return to the client
+        logger.error("Could not perform search: %s", e)
         raise HTTPException(status_code=500, detail=e.reason_phrase)
 
 

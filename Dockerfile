@@ -32,7 +32,6 @@ WORKDIR /app
 
 # Copy poetry files & install the dependencies
 COPY backend/pyproject.toml /app
-COPY backend/poetry.lock /app
 COPY --from=build-step /app/build /app/build
 
 RUN poetry install --no-interaction --no-ansi --no-root --without dev

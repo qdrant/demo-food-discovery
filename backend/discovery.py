@@ -6,8 +6,11 @@ from qdrant_client.http.exceptions import UnexpectedResponse
 from sentence_transformers import SentenceTransformer
 
 import settings
+import logging
 
 from models import SearchQuery, Location
+
+logger = logging.getLogger(__name__)
 
 # Create a client to interact with Qdrant
 client = QdrantClient(
@@ -17,7 +20,9 @@ client = QdrantClient(
 )
 
 # Load the embeddings model
-model = SentenceTransformer("clip-ViT-B-32", device="cpu", cache_folder="./models_cache")
+model = SentenceTransformer(
+    "clip-ViT-B-32", device="cpu", cache_folder="./models_cache"
+)
 
 
 def create_location_filter(location: Location) -> models.Filter:
@@ -31,7 +36,7 @@ def create_location_filter(location: Location) -> models.Filter:
                         lat=location.latitude,
                     ),
                     radius=location.radius_km * 1000,
-                )
+                ),
             )
         ]
     )
@@ -75,8 +80,9 @@ def choose_random_points(search_query: SearchQuery):
         # Retrieve the collection info to know the dimension of the vectors
         collection_info = client.get_collection(settings.QDRANT_COLLECTION)
         vector_size = collection_info.config.params.vectors.size
-    except UnexpectedResponse:
+    except UnexpectedResponse as e:
         # If the collection does not exist, return an empty list of points
+        logger.error("Could not retrieve collection info: %s", e)
         return []
 
     random_points = 2.0 * np.random.random((search_query.limit, vector_size)) - 1.0
