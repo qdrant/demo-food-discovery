@@ -171,7 +171,7 @@ curl -X PUT \
     -H 'Content-Type: multipart/form-data' \
     -F 'snapshot=@/tmp/wolt-clip-ViT-B-32.snapshot' \
     -H "Api-key: << QDRANT_API_KEY >>" \
-    << QDRANT_URL >>/collections/wolt-clip-ViT-B-32/snapshots/recover
+    << QDRANT_URL >>/collections/wolt-clip-ViT-B-32/snapshots/upload
 ```
 
 ### Using the application
