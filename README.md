@@ -11,7 +11,7 @@ you might not know precisely what you want, but want to see some options and exp
 them to find something interesting.**
 
 The demo is based on the [Wolt](https://wolt.com/) dataset of dishes. It contains 
-over 100k images of dishes from different restaurants. The images are vectorized with
+over 2M images of dishes from different restaurants. The images are vectorized with
 the [CLIP](https://openai.com/blog/clip/) model and indexed in Qdrant. For the 
 simplicity, we use the `clip-ViT-B-32` model available in the 
 [Sentence-Transformers](https://www.sbert.net/examples/applications/image-search/README.html)
@@ -25,10 +25,14 @@ is used internally to find some other items that are visually similar to the lik
 and dissimilar to the disliked ones. All the components are enclosed in Docker Compose
 and can be run with a single command.
 
-Proposed mechanism is embedding-agnostic, so it can be used with any image embeddings.
-We do not vectorize queries during the search, but rather use the same embeddings that
-were used during the indexing. Thus, there is no vectorization overhead during the 
-search, what makes it very fast.
+On top of the positive and negative examples based search, you can also use a text query
+to filter the results based on the names of the dishes. The text query is vectorized
+with the same CLIP model and used in semantic search.
+
+Proposed mechanism is embedding-agnostic, so it can be used with any multimodal embeddings
+model. We only vectorize text queries during the search, but mostly use the same image 
+embeddings that were used during the indexing. Thus, there might no vectorization overhead 
+during the search, what makes it very fast.
 
 https://github.com/qdrant/demo-food-discovery/assets/2649301/fdee50db-67e4-408c-8252-9f505f45bb12
 
@@ -41,7 +45,9 @@ The demo consists of the following components:
 - [FastAPI backend](/backend) - a backend that communicates with Qdrant and exposes a REST API
 - [Qdrant](https://qdrant.tech/) - a vector search engine that stores the data and performs the search
 
-All the components come pre-configured and can be run with a single command. 
+All the components come pre-configured and can be run with a single command. The 
+[uvicorn](https://www.uvicorn.org/) webserver handles the communication between the
+user and the application.
 
 ## Usage
 
@@ -128,9 +134,10 @@ import into your Qdrant instance.
 #### Importing a snapshot
 
 Qdrant documentation describes how to import a snapshot into a Qdrant instance. We are
-going to [recover via API](https://qdrant.tech/documentation/concepts/snapshots/#recover-via-api)
-directly from the [GCP bucket](https://storage.googleapis.com/common-datasets-snapshots/wolt-clip-ViT-B-32.snapshot). 
-You can use the following command to import the snapshot:
+going to [recover via API](https://qdrant.tech/documentation/concepts/snapshots/#recover-via-api).
+First of all, we need to download the snapshot from [GCP bucket](https://storage.googleapis.com/common-datasets-snapshots/wolt-clip-ViT-B-32.snapshot). 
+Let's assume it was downloaded to `/tmp/wolt-clip-ViT-B-32.snapshot`. You can use the 
+following command to import the snapshot:
 
 ##### Local Qdrant instance
 
@@ -139,9 +146,9 @@ command. Please adjust the collection name if you want to use a different one.
 
 ```bash
 curl -X PUT \
-    -H "Content-type: application/json" \
-    --data '{"location": "https://storage.googleapis.com/common-datasets-snapshots/wolt-clip-ViT-B-32.snapshot"}' \
-    http://localhost:6333/collections/wolt-clip-ViT-B-32/snapshots/recover
+    -H 'Content-Type: multipart/form-data' \
+    -F 'snapshot=@/tmp/wolt-clip-ViT-B-32.snapshot' \
+    http://localhost:6333/collections/wolt-clip-ViT-B-32/snapshots/upload
 ```
 
 A successful response should look like this:
@@ -150,7 +157,7 @@ A successful response should look like this:
 {
     "result": true,
     "status": "ok",
-    "time": 34.737387814
+    "time": 234.737387814
 }
 ```
 
@@ -161,10 +168,10 @@ that, the request is the same as for the local Qdrant instance.
 
 ```bash
 curl -X PUT \
-    -H "Content-type: application/json" \
+    -H 'Content-Type: multipart/form-data' \
+    -F 'snapshot=@/tmp/wolt-clip-ViT-B-32.snapshot' \
     -H "Api-key: << QDRANT_API_KEY >>" \
-    --data '{"location": "https://storage.googleapis.com/common-datasets-snapshots/wolt-clip-ViT-B-32.snapshot"}' \
-    << QDRANT_URL >>/collections/wolt-clip-ViT-B-32/snapshots/recover
+    << QDRANT_URL >>/collections/wolt-clip-ViT-B-32/snapshots/upload
 ```
 
 ### Using the application
