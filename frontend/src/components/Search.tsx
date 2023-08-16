@@ -163,7 +163,7 @@ interface IInfoModal {
 export const InfoModal: React.FC<IInfoModal> = ({info, open, onClose}) => {
 
     return (
-      <Modal open={open}>
+      <Modal open={open} onClose={onClose}>
           <ModalBody>
               <div className="img-responsive img-responsive-21x9 mb-4"
                    style={{backgroundImage: `url(${info.productImageUrl})`}}></div>

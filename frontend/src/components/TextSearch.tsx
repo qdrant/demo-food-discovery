@@ -13,7 +13,7 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
   const searchState: ISearchState = useContext(SearchContext);
   const [query, setQuery] = useState("");
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = () => {
     searchState.clearFilters();
     searchState.textSearch(query);
     onClose();
@@ -21,7 +21,7 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
   }
 
   return (
-    <Modal open={open}>
+    <Modal open={open} onClose={onClose}>
       <ModalHeader
         title={"What are you looking for?"}
         actions={<button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>}/>
@@ -34,6 +34,11 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
             placeholder="Salad"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSubmit();
+              }
+            }}
           />
         </div>
       </ModalBody>
