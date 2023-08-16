@@ -1,7 +1,8 @@
 import "@tabler/core/dist/css/tabler.css";
 import "@tabler/core/dist/js/tabler.js";
 import React from "react";
-import {Header, RefreshButton} from "./components/Page";
+import {Header, NearMeButton, RefreshButton} from "./components/Page";
+import {TextSearchButton} from "./components/TextSearch";
 import {Filters, Results} from "./components/Search";
 import {SearchContext} from "./context/Search";
 import {ISearchState} from "./interface/Search";
@@ -36,6 +37,8 @@ export default function App() {
                         <Results/>
                     </div>
                 </div>
+                <TextSearchButton/>
+                <NearMeButton/>
                 <RefreshButton/>
             </div>
         </SearchContext.Provider>
