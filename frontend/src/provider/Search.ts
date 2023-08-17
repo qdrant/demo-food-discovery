@@ -1,9 +1,10 @@
-import {ISearchFilter, ISearchResult} from "../interface/Search";
+import {ISearchFilter, ISearchLocation, ISearchRequestBody, ISearchResult} from "../interface/Search";
 import {useEffect, useState} from "react";
 
 export const SearchContextProvider = () => {
     const [results, setResults] = useState<ISearchResult[]>([]);
     const [filters, setFilters] = useState<ISearchFilter[]>([]);
+    const [location, setLocation] = useState<ISearchLocation|null>(null);
 
     const _mapProductsProperties = (products: any[]): ISearchResult[] => {
         return products.map((product: any) => {
@@ -16,17 +17,23 @@ export const SearchContextProvider = () => {
         });
     }
 
-    const retrieveResults = (filters: ISearchFilter[]) => {
-        const positiveIds = filters.filter(f => f.isPositive).map(f => f.productId);
-        const negativeIds = filters.filter(f => !f.isPositive).map(f => f.productId);
+    const retrieveResults = (f: ISearchFilter[] = filters, l: ISearchLocation|null = location) => {
+        const positiveIds = f.filter(f => f.isPositive).map(f => f.productId);
+        const negativeIds = f.filter(f => !f.isPositive).map(f => f.productId);
+
+        const body: ISearchRequestBody = {
+            "positive": positiveIds,
+            "negative": negativeIds,
+        }
+
+        if (l) {
+            body["location"] = l;
+        }
 
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                "positive": positiveIds,
-                "negative": negativeIds,
-            })
+            body: JSON.stringify(body)
         }
 
         fetch("/api/search", requestOptions)
@@ -36,7 +43,7 @@ export const SearchContextProvider = () => {
                 }
                 return response.json();
             })
-            .then(data => _mapProductsProperties(data))
+            .then(_mapProductsProperties)
             .then(setResults)
             .catch(error => console.error(error));
     }
@@ -65,13 +72,23 @@ export const SearchContextProvider = () => {
         return [];
     }
 
-    const textSearch = (query: string|null = null) => {
+    const textSearch = (query: string = '', l: ISearchLocation|null = location) => {
+        const body: ISearchRequestBody = {
+            query,
+            "positive": [],
+            "negative": [],
+        }
+
+        if (l) {
+            body["location"] = l;
+        }
 
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 query,
+                location: l,
                 "positive": [],
                 "negative": [],
             })
@@ -84,23 +101,25 @@ export const SearchContextProvider = () => {
               }
               return response.json();
           })
-          .then(data => _mapProductsProperties(data))
+          .then(_mapProductsProperties)
           .then(setResults)
           .catch(error => console.error(error));
     }
 
     // Retrieve initial results
     useEffect(() => {
-        retrieveResults(filters);
+        retrieveResults();
     }, []);
 
     return {
         results,
         filters,
+        location,
         addFilter,
         removeFilter,
         clearFilters,
         retrieveResults,
         textSearch,
+        setLocation,
     }
 };
