@@ -82,6 +82,10 @@ export const Modal: React.FC<IModal> = ({children, open, onClose}) => {
       e.preventDefault();
       onClose();
     }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onClose();
+    }
   }
 
   return (

@@ -16,7 +16,7 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
   const handleSubmit = () => {
     searchState.clearFilters();
     searchState.textSearch(query);
-    onClose();
+    if (open) onClose();
     setQuery("");
   }
 
@@ -57,7 +57,6 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
 
 export const TextSearchButton = () => {
   const [open, setOpen] = React.useState(false);
-  const searchState: ISearchState = useContext(SearchContext);
 
   return (
     <>
