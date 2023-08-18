@@ -1,11 +1,27 @@
 import {
     IconMapPinCheck,
-    IconRefresh, IconSearch
+    IconRefresh,
 } from "@tabler/icons-react";
-import React, {useContext, useEffect, useRef} from "react";
+import React, {useContext} from "react";
 import {SearchContext} from "../context/Search";
 import {ISearchState} from "../interface/Search";
 import {Modal} from "./Modal";
+
+const NerMeIndicator = () => {
+    const {location, setLocation, filters, retrieveResults}: ISearchState = useContext(SearchContext);
+
+    return (
+      <>
+          {location && <div className="status status-yellow">Near me <span
+              className="cursor-pointer"
+              onClick={() => {
+                  setLocation(null);
+                  retrieveResults(filters, null);
+              }}
+          >&#10005;</span></div>}
+      </>
+    )
+}
 
 export const Header = () => {
     return <div className="page-header">
@@ -19,42 +35,46 @@ export const Header = () => {
                         Food Discovery
                     </h2>
                 </div>
+                <div className={"col-auto ms-auto"}>
+                    <NerMeIndicator/>
+                </div>
             </div>
         </div>
     </div>;
 };
 
 export const RefreshButton = () => {
-    const searchState: ISearchState = useContext(SearchContext);
+    const {setLocation, clearFilters, retrieveResults} = useContext(SearchContext);
 
     const handleRefresh = () => {
-        searchState.retrieveResults(searchState.clearFilters(), null);
+        setLocation(null);
+        retrieveResults(clearFilters(), null);
     }
 
     return <div className="ribbon ribbon-top bg-orange">
         <button className="switch-icon" style={{"fontSize": "2em"}}>
             <span className="switch-icon-a text-white">
-                 <IconRefresh onClick={handleRefresh} />
+                 <IconRefresh onClick={handleRefresh}/>
             </span>
         </button>
     </div>
 };
 
 export const NearMeButton = () => {
-    const searchState: ISearchState = useContext(SearchContext);
+    const {setLocation, clearFilters, retrieveResults}: ISearchState = useContext(SearchContext);
     const [loading, setLoading] = React.useState(false);
 
     const handleNearMe = () => {
         setLoading(true);
         navigator.geolocation.getCurrentPosition((position) => {
-            searchState.clearFilters();
+            clearFilters();
             const location = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
                 radius_km: 100,
             }
-            searchState.retrieveResults([], location);
-            searchState.setLocation(location);
+            retrieveResults([], location);
+            setLocation(location);
             setLoading(false)
         }, (error) => {
             console.log(error);

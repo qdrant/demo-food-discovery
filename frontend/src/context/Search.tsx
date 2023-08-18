@@ -1,6 +1,6 @@
 import {createContext} from "react";
 import {
-    ISearchFilter,
+    ISearchFilter, ISearchLocation,
     ISearchResult,
     ISearchState,
 } from "../interface/Search";

@@ -15,16 +15,18 @@ export interface ISearchLocation {
     radius_km: number;
 }
 
+export type Nullable<T> = T | null;
+
 export interface ISearchState {
     results: ISearchResult[];
     filters: ISearchFilter[];
-    location: ISearchLocation|null;
+    location?: Nullable<ISearchLocation>;
     removeFilter: (filter: ISearchFilter) => ISearchFilter[];
     addFilter: (product: ISearchResult, isPositive: boolean) => ISearchFilter[];
     clearFilters: () => ISearchFilter[];
     textSearch: (query: string|undefined) => void;
     retrieveResults: (filters?: ISearchFilter[]|null, location?: ISearchLocation|null) => void;
-    setLocation: (location: ISearchLocation|null) => void;
+    setLocation: (location: Nullable<ISearchLocation>) => void;
 }
 
 export interface ISearchRequestBody {
