@@ -37,3 +37,71 @@ code {
   right: 0;
   overflow: hidden;
 }
+
+div, p, h1, h2, h3, h4, h5, h6, span, a, button, label, input, select, textarea, .text {
+  font-family: 'Roboto', sans-serif;
+  color: #06153D !important;
+}
+
+.text-muted {
+  color: #6A80BD !important;
+}
+
+body.layout-boxed {
+  background-color: #06153D;
+  background-image: linear-gradient(180deg, #06153D 0%, #1F3266 94%);
+}
+
+body.layout-boxed .page, .card {
+  background-color: #F2F6FF;
+}
+
+.bg-green {
+  background-color: #12B765 !important;
+}
+
+.bg-green-lt {
+  background-color: #D1FADF !important;
+  color: #085232 !important;
+}
+.bg-green-lt .card-title {
+  color: #085232 !important;
+}
+
+.bg-red {
+  background-color: #F03030 !important;
+}
+
+.bg-red-lt {
+  background-color: #FED6D6 !important;
+  color: #661414 !important;
+}
+.bg-red-lt .card-title {
+  color: #661414 !important;
+}
+
+.bg-orange {
+  background-color: #F5870A !important;
+}
+
+.bg-purple {
+  background-color: #724CEF !important;
+}
+
+.bg-blue {
+  background-color: #148BF4 !important;
+}
+
+.bg-teal {
+  background-color: #009999 !important;
+}
+
+.btn-primary {
+  background-color: #5069AD !important;
+  border-color: #5069AD !important;
+  color: #FFFFFF !important;
+}
+
+.btn-link {
+  color: #5069AD !important;
+}

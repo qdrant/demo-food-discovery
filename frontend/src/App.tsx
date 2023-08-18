@@ -1,5 +1,6 @@
 import "@tabler/core/dist/css/tabler.css";
 import "@tabler/core/dist/js/tabler.js";
+import './index.css';
 import React from "react";
 import {Header, RefreshButton} from "./components/Page";
 import {NearMeButton} from "./components/NearMeButton";
