@@ -27,3 +27,4 @@ class Product(BaseModel):
     name: str
     description: str
     image_url: str
+    payload: dict

@@ -1,13 +1,12 @@
 import itertools
-import numpy as np
+import logging
+import random
 
+import numpy as np
 from qdrant_client import QdrantClient, models
-from qdrant_client.http.exceptions import UnexpectedResponse
 from sentence_transformers import SentenceTransformer
 
 import settings
-import logging
-
 from models import SearchQuery, Location
 
 logger = logging.getLogger(__name__)
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 client = QdrantClient(
     settings.QDRANT_URL,
     api_key=settings.QDRANT_API_KEY,
-    timeout=60,
+    prefer_grpc=True,
 )
 
 # Load the embeddings model
@@ -68,35 +67,49 @@ def handle_text_search(search_query: SearchQuery):
     )
 
 
-def choose_random_points(search_query: SearchQuery):
+def choose_random_points(limit, location=None):
     """
     Generate some random points in the vector space and then search for the nearest
     neighbors of these points in the collection. Each random point generated just one
     result, so the diversity of the results is better.
-    :param search_query: search query
+    :param limit: how many points to generate
     :return:
     """
-    try:
-        # Retrieve the collection info to know the dimension of the vectors
-        collection_info = client.get_collection(settings.QDRANT_COLLECTION)
-        vector_size = collection_info.config.params.vectors.size
-    except UnexpectedResponse as e:
-        # If the collection does not exist, return an empty list of points
-        logger.error("Could not retrieve collection info: %s", e)
-        return []
+    max_points = 100_000  # We can get points from an actual collection
 
-    random_points = 2.0 * np.random.random((search_query.limit, vector_size)) - 1.0
+    random_points = []
+    # ToDo: replace with sample API as soon as it is implemented
+    while len(random_points) < limit:
+        random_points_ids = [
+            random.randint(0, max_points)
+            for _ in range(limit * 2 - len(random_points))
+        ]
+        # Check that points actually exist in the collection
+        random_points += [
+            point.id
+            for point in random.sample(
+                client.retrieve(
+                    collection_name=settings.QDRANT_COLLECTION,
+                    ids=random_points_ids,
+                    with_payload=False,
+                    with_vectors=False,
+                ),
+                limit - len(random_points),
+            )]
 
     query_filter = (
-        create_location_filter(search_query.location)
-        if search_query.location is not None
+        create_location_filter(location)
+        if location is not None
         else None
     )
-    results = client.search_batch(
+    results = client.recommend_batch(
         settings.QDRANT_COLLECTION,
         requests=[
-            models.SearchRequest(
-                vector=point.tolist(), filter=query_filter, limit=1, with_payload=True
+            models.RecommendRequest(
+                positive=[point],
+                filter=query_filter,
+                limit=1,
+                with_payload=True
             )
             for point in random_points
         ],
