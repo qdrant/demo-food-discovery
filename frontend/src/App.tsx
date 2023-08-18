@@ -1,7 +1,8 @@
 import "@tabler/core/dist/css/tabler.css";
 import "@tabler/core/dist/js/tabler.js";
 import React from "react";
-import {Header, NearMeButton, RefreshButton} from "./components/Page";
+import {Header, RefreshButton} from "./components/Page";
+import {NearMeButton} from "./components/NearMeButton";
 import {TextSearchButton} from "./components/TextSearch";
 import {Filters, Results} from "./components/Search";
 import {SearchContext} from "./context/Search";
