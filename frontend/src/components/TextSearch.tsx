@@ -61,10 +61,11 @@ export const TextSearchButton = () => {
 
   return (
     <>
-      <div className="ribbon ribbon-top bg-twitter" style={{right: '110px'}}>
+      <div className="ribbon ribbon-top bg-purple cursor-pointer" style={{right: '110px'}}
+           onClick={() => setOpen(true)} title="Text search">
         <button className="switch-icon" style={{"fontSize": "2em"}}>
             <span className="switch-icon-a text-white">
-                 <IconSearch onClick={() => setOpen(true)}/>
+                 <IconSearch/>
             </span>
         </button>
       </div>

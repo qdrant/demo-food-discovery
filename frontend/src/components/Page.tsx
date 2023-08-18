@@ -1,5 +1,7 @@
 import {
-    IconMapPinCheck,
+    IconLocation, IconLocationPin,
+    IconMapPin,
+    IconMapPinCheck, IconMapPinSearch,
     IconRefresh,
 } from "@tabler/icons-react";
 import React, {useContext} from "react";
@@ -7,33 +9,22 @@ import {SearchContext} from "../context/Search";
 import {ISearchState} from "../interface/Search";
 import {Modal} from "./Modal";
 
-const NerMeIndicator = () => {
-    const {location, setLocation, filters, retrieveResults}: ISearchState = useContext(SearchContext);
-
-    return (
-      <>
-          {location && <div className="status status-yellow">Near me <span
-              className="cursor-pointer"
-              onClick={() => {
-                  setLocation(null);
-                  retrieveResults(filters, null);
-              }}
-          >&#10005;</span></div>}
-      </>
-    )
-}
-
 export const Header = () => {
     return <div className="page-header">
         <div className="container-xl">
             <div className="row align-items-center">
-                <div className="col">
-                    <div className="page-pretitle">
-                        Semantic search
+                <div className="col d-flex">
+                        <a href="https://qdrant.tech" target="_blank">
+                            <img src="/powered_by_qdrant.svg" width={130} alt={'Powered by Qdrant'}/>
+                        </a>
+                    <div className="d-flex flex-column" style={{marginLeft: '1rem', marginTop: '-3px'}}>
+                        <div className="page-pretitle">
+                            Semantic search
+                        </div>
+                        <h2 className="page-title">
+                            Food Discovery
+                        </h2>
                     </div>
-                    <h2 className="page-title">
-                        Food Discovery
-                    </h2>
                 </div>
                 <div className={"col-auto ms-auto"}>
                     <NerMeIndicator/>
@@ -51,29 +42,46 @@ export const RefreshButton = () => {
         retrieveResults(clearFilters(), null);
     }
 
-    return <div className="ribbon ribbon-top bg-orange">
+    return <div className="ribbon ribbon-top bg-teal cursor-pointer" onClick={handleRefresh} title="Reset all">
         <button className="switch-icon" style={{"fontSize": "2em"}}>
             <span className="switch-icon-a text-white">
-                 <IconRefresh onClick={handleRefresh}/>
+                 <IconRefresh/>
             </span>
         </button>
     </div>
 };
 
+const NerMeIndicator = () => {
+    const {location, setLocation, filters, retrieveResults}: ISearchState = useContext(SearchContext);
+
+    return (
+      <>
+          {location && <div className="status bg-green-lt">Near me: {location.latitude}, {location.longitude}<span
+              className="cursor-pointer"
+              onClick={() => {
+                  setLocation(null);
+                  retrieveResults(filters, null);
+              }}
+              title="Clear location"
+          >&#10005;</span></div>}
+      </>
+    )
+}
+
 export const NearMeButton = () => {
-    const {setLocation, clearFilters, retrieveResults}: ISearchState = useContext(SearchContext);
+    const {setLocation, filters, retrieveResults}: ISearchState = useContext(SearchContext);
     const [loading, setLoading] = React.useState(false);
+    const RADIUS = 10; // km
 
     const handleNearMe = () => {
         setLoading(true);
         navigator.geolocation.getCurrentPosition((position) => {
-            clearFilters();
             const location = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
-                radius_km: 100,
+                radius_km: RADIUS,
             }
-            retrieveResults([], location);
+            retrieveResults(filters, location);
             setLocation(location);
             setLoading(false)
         }, (error) => {
@@ -83,16 +91,18 @@ export const NearMeButton = () => {
             enableHighAccuracy: true,
             timeout: 10000,
             maximumAge: 0
-        })
+        });
     }
 
-    return <div className="ribbon ribbon-top bg-yellow" style={{right: '60px'}}>
+    return <div className="ribbon ribbon-top bg-blue cursor-pointer" style={{right: '60px'}}
+                onClick={handleNearMe} title={'Find near me'}>
         <Modal open={loading} onClose={() => setLoading(false)}>
-            <h3 className='mt-3'>Getting your location<span className="animated-dots"></span></h3>
+            <h3 className='mt-3'>
+                <IconMapPinSearch/> Getting your location<span className="animated-dots"></span></h3>
         </Modal>
         <button className="switch-icon" style={{"fontSize": "2em"}}>
             <span className="switch-icon-a text-white">
-                 <IconMapPinCheck onClick={handleNearMe}/>
+                 <IconMapPinCheck/>
             </span>
         </button>
     </div>

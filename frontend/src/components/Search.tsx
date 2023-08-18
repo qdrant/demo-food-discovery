@@ -38,11 +38,10 @@ const Filter = () => {
                 <div className="card-body">
                     <h3 className="small card-title">{filter.productName}</h3>
                 </div>
-                <div className="ribbon ribbon-top bg-orange">
+                <div className="ribbon ribbon-top bg-orange cursor-pointer" onClick={handleRemoveFilter}>
                     <button className="switch-icon h-50 remove-filter"
                             data-bs-toggle="switch-icon"
-                            style={{fontSize: "2em"}}
-                            onClick={handleRemoveFilter}>
+                            style={{fontSize: "2em"}}>
                         <span className="switch-icon-a text-white">
                             <IconTrash/>
                         </span>
@@ -109,11 +108,9 @@ const Result = () => {
                     {result.productDescription}
                 </p>
             </div>
-            <div className="ribbon ribbon-left mt-2 bg-green">
-                <button className="switch-icon h-50 thumbs-up"
-                        data-bs-toggle="switch-icon"
-                        style={{fontSize: "2em"}}
-                        onClick={() => handleAddFilter(result, true)}>
+            <div className="ribbon ribbon-left mt-2 bg-green cursor-pointer"
+                 onClick={() => handleAddFilter(result, true)}>
+                <button className="switch-icon h-50 thumbs-up" data-bs-toggle="switch-icon" style={{fontSize: "2em"}}>
                     <span className="switch-icon-a text-white">
                         <IconThumbUp/>
                     </span>
@@ -122,11 +119,9 @@ const Result = () => {
                     </span>
                 </button>
             </div>
-            <div className="ribbon ribbon-left mt-6 bg-red" style={{color: "white"}}>
-                <button className="switch-icon h-50 thumbs-down"
-                        data-bs-toggle="switch-icon"
-                        style={{fontSize: "2em"}}
-                        onClick={() => handleAddFilter(result, false)}>
+            <div className="ribbon ribbon-left mt-6 bg-red cursor-pointer" style={{color: "white"}}
+                 onClick={() => handleAddFilter(result, false)}>
+                <button className="switch-icon h-50 thumbs-down" data-bs-toggle="switch-icon" style={{fontSize: "2em"}}>
                     <span className="switch-icon-a text-white">
                         <IconThumbDown/>
                     </span>
@@ -172,7 +167,7 @@ export const InfoModal: React.FC<IInfoModal> = ({info, open, onClose}) => {
           </ModalBody>
           <ModalFooter>
               <button className="btn btn-link link-secondary" onClick={onClose}>
-                  Cancel
+                  Close
               </button>
           </ModalFooter>
       </Modal>
