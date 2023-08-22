@@ -49,7 +49,7 @@ def search(search_query: SearchQuery) -> List[Product]:
             points = handle_text_search(search_query)
         elif len(positive) == 0 and len(negative) == 0:
             # If no ids are provided, return random products
-            points = choose_random_points(search_query.limit, search_query.location)
+            points = choose_random_points(search_query)
         elif len(positive) == 0 and len(negative) > 0:
             # If only disliked products are provided, we cannot use the recommendation
             # API directly, so it has to be handled separately

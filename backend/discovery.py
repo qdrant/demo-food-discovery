@@ -67,22 +67,22 @@ def handle_text_search(search_query: SearchQuery):
     )
 
 
-def choose_random_points(limit, location=None):
+def choose_random_points(search_query: SearchQuery):
     """
-    Generate some random points in the vector space and then search for the nearest
+    Choose some random points from the vector space and then search for the nearest
     neighbors of these points in the collection. Each random point generated just one
     result, so the diversity of the results is better.
-    :param limit: how many points to generate
+    :param search_query: search query
     :return:
     """
     max_points = 100_000  # We can get points from an actual collection
 
     random_points = []
     # ToDo: replace with sample API as soon as it is implemented
-    while len(random_points) < limit:
+    while len(random_points) < search_query.limit:
         random_points_ids = [
             random.randint(0, max_points)
-            for _ in range(limit * 2 - len(random_points))
+            for _ in range(search_query.limit * 2 - len(random_points))
         ]
         # Check that points actually exist in the collection
         random_points += [
@@ -94,12 +94,12 @@ def choose_random_points(limit, location=None):
                     with_payload=False,
                     with_vectors=False,
                 ),
-                limit - len(random_points),
+                search_query.limit - len(random_points),
             )]
 
     query_filter = (
-        create_location_filter(location)
-        if location is not None
+        create_location_filter(search_query.location)
+        if search_query.location is not None
         else None
     )
     results = client.recommend_batch(
