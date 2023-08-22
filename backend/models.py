@@ -13,9 +13,7 @@ class Location(BaseModel):
     longitude: float
 
 
-class LocationFilter(BaseModel):
-    latitude: float
-    longitude: float
+class LocationFilter(Location):
     radius_km: float
 
 
