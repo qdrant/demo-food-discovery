@@ -60,13 +60,7 @@ def search(search_query: SearchQuery) -> List[Product]:
             points = recommend_by_ids(search_query)
 
         return [
-            Product(
-                id=point.id,
-                name=point.payload["name"],
-                description=point.payload["description"],
-                image_url=point.payload["image"],
-                payload=point.payload,
-            )
+            Product.from_point(point)
             for point in points
         ]
     except UnexpectedResponse as e:
