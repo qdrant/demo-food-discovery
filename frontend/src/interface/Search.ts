@@ -1,8 +1,20 @@
+export interface ISearchRestaurant {
+    location: {
+        latitude: number;
+        longitude: number;
+    },
+    name: string;
+    rating: number;
+    slug?: string;
+    address?: string;
+}
+
 export interface ISearchResult {
     productId: string;
     productName: string;
     productDescription: string;
     productImageUrl: string;
+    productRestaurant: ISearchRestaurant;
 }
 
 export interface ISearchFilter extends ISearchResult {

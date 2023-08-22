@@ -13,6 +13,7 @@ export const SearchContextProvider = () => {
                 productName: product.name,
                 productDescription: product.description,
                 productImageUrl: product.image_url,
+                productRestaurant: product.restaurant,
             }
         });
     }
