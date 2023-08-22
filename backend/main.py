@@ -65,6 +65,7 @@ def search(search_query: SearchQuery) -> List[Product]:
                 name=point.payload["name"],
                 description=point.payload["description"],
                 image_url=point.payload["image"],
+                payload=point.payload,
             )
             for point in points
         ]

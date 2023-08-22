@@ -21,26 +21,13 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import styled from "styled-components";
 
 
-const FilterPlaceholder = () => {
-    const placeholderImg: string = "https://placehold.co/210x90/ecedef/667382/png?text=%2B";
-    return (
-        <div className="col-sm-2">
-            <div className="card">
-                <div
-                    className="img-responsive img-responsive-21x9 card-img-top"
-                    style={{backgroundImage: `url(${placeholderImg})`}}></div>
-                <div className="card-body opacity-40">
-                    <h3 className="card-title placeholder cursor-default"></h3>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-
 const Filter = () => {
     const searchState: ISearchState = useContext(SearchContext);
     const filter: ISearchFilter = useContext(FilterContext);
+
+    const handleRemoveFilter = () => {
+        searchState.retrieveResults(searchState.removeFilter(filter));
+    }
 
     const filterClass = filter.isPositive ? "bg-green-lt" : "bg-red-lt";
     return (
@@ -51,11 +38,10 @@ const Filter = () => {
                 <div className="card-body">
                     <h3 className="small card-title">{filter.productName}</h3>
                 </div>
-                <div className="ribbon ribbon-top bg-orange">
+                <div className="ribbon ribbon-top bg-orange cursor-pointer" onClick={handleRemoveFilter}>
                     <button className="switch-icon h-50 remove-filter"
                             data-bs-toggle="switch-icon"
-                            style={{fontSize: "2em"}}
-                            onClick={() => searchState.removeFilter(filter)}>
+                            style={{fontSize: "2em"}}>
                         <span className="switch-icon-a text-white">
                             <IconTrash/>
                         </span>
@@ -106,6 +92,11 @@ const Result = () => {
     const result: ISearchResult = useContext(ResultContext);
     const [openInfoModal, setOpenInfoModal] = React.useState(false);
 
+    const handleAddFilter = (product: ISearchResult, isPositive: boolean) => {
+        const filters = searchState.addFilter(product, isPositive);
+        searchState.retrieveResults(filters);
+    };
+
     return <div className="col-sm-3 border-2">
         <div className="card">
             <div className="img-responsive img-responsive-21x9 card-img-top"
@@ -117,11 +108,9 @@ const Result = () => {
                     {result.productDescription}
                 </p>
             </div>
-            <div className="ribbon ribbon-left mt-2 bg-green">
-                <button className="switch-icon h-50 thumbs-up"
-                        data-bs-toggle="switch-icon"
-                        style={{fontSize: "2em"}}
-                        onClick={() => searchState.addFilter(result, true)}>
+            <div className="ribbon ribbon-left mt-2 bg-green cursor-pointer"
+                 onClick={() => handleAddFilter(result, true)}>
+                <button className="switch-icon h-50 thumbs-up" data-bs-toggle="switch-icon" style={{fontSize: "2em"}}>
                     <span className="switch-icon-a text-white">
                         <IconThumbUp/>
                     </span>
@@ -130,11 +119,9 @@ const Result = () => {
                     </span>
                 </button>
             </div>
-            <div className="ribbon ribbon-left mt-6 bg-red" style={{color: "white"}}>
-                <button className="switch-icon h-50 thumbs-down"
-                        data-bs-toggle="switch-icon"
-                        style={{fontSize: "2em"}}
-                        onClick={() => searchState.addFilter(result, false)}>
+            <div className="ribbon ribbon-left mt-6 bg-red cursor-pointer" style={{color: "white"}}
+                 onClick={() => handleAddFilter(result, false)}>
+                <button className="switch-icon h-50 thumbs-down" data-bs-toggle="switch-icon" style={{fontSize: "2em"}}>
                     <span className="switch-icon-a text-white">
                         <IconThumbDown/>
                     </span>
@@ -180,7 +167,7 @@ export const InfoModal: React.FC<IInfoModal> = ({info, open, onClose}) => {
           </ModalBody>
           <ModalFooter>
               <button className="btn btn-link link-secondary" onClick={onClose}>
-                  Cancel
+                  Close
               </button>
           </ModalFooter>
       </Modal>

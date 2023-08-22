@@ -5,6 +5,7 @@ import exp from "constants";
 export interface IModal {
   open: boolean;
   children: React.ReactNode;
+  onClose: () => void;
 }
 
 export interface IModalHeader {
@@ -55,7 +56,7 @@ export const ModalFooter: React.FC<IModalFooter> = ({children}) => {
   </div>
 }
 
-export const Modal: React.FC<IModal> = ({children, open}) => {
+export const Modal: React.FC<IModal> = ({children, open, onClose}) => {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -69,8 +70,30 @@ export const Modal: React.FC<IModal> = ({children, open}) => {
     }
   }, [open]);
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement, MouseEvent>) => {
+    if (e.target === ref.current) {
+      onClose();
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDialogElement>) => {
+    // we need this to sync native dialog close with react state
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onClose();
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onClose();
+    }
+  }
+
   return (
-    <StyledTextSearchModal ref={ref}>
+    <StyledTextSearchModal
+      ref={ref}
+      onKeyDown={handleKeyDown}
+      onClick={handleBackdropClick}
+    >
       <div className="modal-dialog">
         <div className="modal-content">
           {children}

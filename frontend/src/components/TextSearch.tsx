@@ -13,10 +13,10 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
   const searchState: ISearchState = useContext(SearchContext);
   const [query, setQuery] = useState("");
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // TODO: implement
-    // searchState.textSearch(query);
-    onClose();
+  const handleSubmit = () => {
+    searchState.clearFilters();
+    searchState.textSearch(query);
+    if (open) onClose();
     setQuery("");
   }
 
@@ -34,6 +34,11 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
             placeholder="Salad"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSubmit();
+              }
+            }}
           />
         </div>
       </ModalBody>
@@ -52,14 +57,14 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
 
 export const TextSearchButton = () => {
   const [open, setOpen] = React.useState(false);
-  const searchState: ISearchState = useContext(SearchContext);
 
   return (
     <>
-      <div className="ribbon ribbon-top bg-twitter" style={{right: '110px'}}>
+      <div className="ribbon ribbon-top bg-purple cursor-pointer" style={{right: '110px'}}
+           onClick={() => setOpen(true)} title="Text search">
         <button className="switch-icon" style={{"fontSize": "2em"}}>
             <span className="switch-icon-a text-white">
-                 <IconSearch onClick={() => setOpen(true)}/>
+                 <IconSearch/>
             </span>
         </button>
       </div>
