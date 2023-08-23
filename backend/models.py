@@ -29,6 +29,8 @@ class Restaurant(BaseModel):
     name: str
     rating: Optional[float]
     location: Location
+    slug: Optional[str] = None
+    address: Optional[str] = None
 
 
 class Product(BaseModel):
@@ -49,6 +51,8 @@ class Product(BaseModel):
             name=point.payload["cafe"]["name"],
             rating=point.payload["cafe"]["rating"],
             location=location,
+            slug=point.payload["cafe"]["slug"],
+            address=point.payload["cafe"]["address"],
         )
         return Product(
             id=point.id,

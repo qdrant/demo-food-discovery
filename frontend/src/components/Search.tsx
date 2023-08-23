@@ -5,6 +5,8 @@ import {
     ISearchState
 } from "../interface/Search";
 import {
+    IconExternalLink,
+    IconLocationPin, IconMapPin, IconMapPinSearch, IconPin,
     IconThumbDown,
     IconThumbDownFilled,
     IconThumbUp,
@@ -19,11 +21,13 @@ import {
 } from "../context/Search";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import styled from "styled-components";
+import Rating from "./Rating";
 
 
 const Filter = () => {
     const searchState: ISearchState = useContext(SearchContext);
     const filter: ISearchFilter = useContext(FilterContext);
+    const [openInfoModal, setOpenInfoModal] = React.useState(false);
 
     const handleRemoveFilter = () => {
         searchState.retrieveResults(searchState.removeFilter(filter));
@@ -35,7 +39,7 @@ const Filter = () => {
             <div className={`card ${filterClass}`}>
                 <div className="img-responsive img-responsive-21x9 card-img-top"
                      style={{backgroundImage: `url(${filter.productImageUrl})`}}></div>
-                <div className="card-body">
+                <div className="card-body cursor-pointer" onClick={() => setOpenInfoModal(true)}>
                     <h3 className="small card-title">{filter.productName}</h3>
                 </div>
                 <div className="ribbon ribbon-top bg-orange cursor-pointer" onClick={handleRemoveFilter}>
@@ -51,6 +55,7 @@ const Filter = () => {
                     </button>
                 </div>
             </div>
+            <InfoModal info={filter} open={openInfoModal} onClose={() => setOpenInfoModal(false)}/>
         </div>
     )
 }
@@ -162,8 +167,31 @@ export const InfoModal: React.FC<IInfoModal> = ({info, open, onClose}) => {
           <ModalBody>
               <div className="img-responsive img-responsive-21x9 mb-4"
                    style={{backgroundImage: `url(${info.productImageUrl})`}}></div>
-              <h3>{info.productName}</h3>
+              <h2>{info.productName}</h2>
               <p>{info.productDescription}</p>
+              <div className="hr-text hr-text-left">About Restaurant:</div>
+              <div className={'row'}>
+                  <div className={'col-6'}>
+
+                      <p>Name: {info.productRestaurant.name}</p>
+
+                      {info.productRestaurant.rating &&
+                          <p style={{display: "flex", alignItems: "center", lineHeight: '16px'}}>
+                            Rating: <Rating value={info.productRestaurant.rating}
+                                            style={{marginBottom: '3px', marginLeft: '6px'}}/>
+                          </p>
+                      }
+                  </div>
+                  <div className={'col-6'}>
+
+                      <p>Address: {info.productRestaurant.address}</p>
+                      <p><a
+                        href={`https://www.google.com/maps/search/?api=1&query=${info.productRestaurant.location.latitude},${info.productRestaurant.location.longitude}`}
+                        target="_blank" rel="noreferrer"><IconMapPin/> See on Map</a></p>
+                  </div>
+              </div>
+
+
           </ModalBody>
           <ModalFooter>
               <button className="btn btn-link link-secondary" onClick={onClose}>
