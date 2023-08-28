@@ -43,10 +43,11 @@ jobs:
           docker images;
           docker kill $containerName || true;
           docker rm $containerName || true;
-          docker run -d -p 5555:8000 --restart unless-stopped \
+          docker run -d -p 8001:8001 --restart unless-stopped \
                     --network=qdrant-net \
                     -e QDRANT_URL=${{ secrets.QDRANT_URL }} \
                     -e QDRANT_API_KEY=${{ secrets.QDRANT_API_KEY }} \
+                    -e QDRANT_COLLECTION=${{ secrets.QDRANT_COLLECTION }} \
                     --name $containerName qdrant/food-discovery:${{ github.sha }};
         host: ${{ secrets.DEPLOY_HOST }}
         user: ${{ secrets.DEPLOY_USER }}
