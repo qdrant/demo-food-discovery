@@ -41,8 +41,13 @@ RUN python -c 'from sentence_transformers import SentenceTransformer; SentenceTr
 # Finally copy the application source code and install root
 COPY backend /app
 
-# Expose port 8000
+ARG USER_ID=1000
+RUN if [[ "$USER_ID" != "0" ]]; then (groupadd --gid $USER_ID demo \
+    && useradd --uid $USER_ID --gid $USER_ID -m demo \
+    && chown -R $USER_ID:$USER_ID /app); fi
+
 EXPOSE 8001
+USER $USER_ID:$USER_ID
 
 # Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
