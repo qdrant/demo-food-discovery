@@ -102,7 +102,7 @@ docker-compose --profile local up -d
 ### Loading the data
 
 At this point, you should have a running demo. However, it does not contain any data,
-but the web application is already available at http://localhost:8080. You can open it
+but the web application is already available at http://localhost:8001. You can open it
 in your browser.
 
 ![Empty demo](images/empty-demo.png)
@@ -177,7 +177,7 @@ curl -X PUT \
 ### Using the application
 
 Once your demo is up and running, you can open it in your browser at 
-http://localhost:8080 and finally start using it.
+http://localhost:8001 and finally start using it.
 
 ![Working demo](images/working-demo.png)
 
