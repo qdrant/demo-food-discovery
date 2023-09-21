@@ -1,11 +1,12 @@
 services:
 
   backend:
+    platform: linux/amd64
     build: .
     env_file: .env
     restart: always
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
       - models_cache:/app/models_cache
 
