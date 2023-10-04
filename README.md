@@ -145,7 +145,7 @@ If you are using a local Qdrant instance, you can import the snapshot with the f
 command. Please adjust the collection name if you want to use a different one.
 
 ```bash
-curl -X PUT \
+curl -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'snapshot=@/tmp/wolt-clip-ViT-B-32.snapshot' \
     http://localhost:6333/collections/wolt-clip-ViT-B-32/snapshots/upload
@@ -167,7 +167,7 @@ If you decided to use a Qdrant Cloud instance, you need to pass your API key. Ot
 that, the request is the same as for the local Qdrant instance.
 
 ```bash
-curl -X PUT \
+curl -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'snapshot=@/tmp/wolt-clip-ViT-B-32.snapshot' \
     -H "Api-key: << QDRANT_API_KEY >>" \
