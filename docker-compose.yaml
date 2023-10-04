@@ -11,7 +11,7 @@ services:
       - models_cache:/app/models_cache
 
   qdrant:
-    image: qdrant/qdrant:v1.4.0
+    image: qdrant/qdrant:latest
     ports:
       - "6333:6333"
     volumes:
