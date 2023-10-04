@@ -2,3 +2,5 @@
 .env.prod
 .idea
 *.iml
+*.snapshot
+*.tgz

@@ -34,7 +34,7 @@ model. We only vectorize text queries during the search, but mostly use the same
 embeddings that were used during the indexing. Thus, there might no vectorization overhead 
 during the search, what makes it very fast.
 
-https://github.com/qdrant/demo-food-discovery/assets/2649301/fdee50db-67e4-408c-8252-9f505f45bb12
+https://github.com/qdrant/demo-food-discovery/assets/2649301/b15ebfc6-3484-4484-bb94-00aaf47a4396
 
 ## Architecture
 
@@ -102,7 +102,7 @@ docker-compose --profile local up -d
 ### Loading the data
 
 At this point, you should have a running demo. However, it does not contain any data,
-but the web application is already available at http://localhost:8080. You can open it
+but the web application is already available at http://localhost:8001. You can open it
 in your browser.
 
 ![Empty demo](images/empty-demo.png)
@@ -177,7 +177,7 @@ curl -X POST \
 ### Using the application
 
 Once your demo is up and running, you can open it in your browser at 
-http://localhost:8080 and finally start using it.
+http://localhost:8001 and finally start using it.
 
 ![Working demo](images/working-demo.png)
 
