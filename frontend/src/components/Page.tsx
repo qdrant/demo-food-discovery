@@ -3,7 +3,7 @@ import {
 } from "@tabler/icons-react";
 import React, {useContext} from "react";
 import {SearchContext} from "../context/Search";
-import {NerMeIndicator} from "./NearMeButton";
+import {NearMeIndicator} from "./NearMeButton";
 
 export const Header = () => {
     return <div className="page-header">
@@ -23,7 +23,7 @@ export const Header = () => {
                     </div>
                 </div>
                 <div className={"col-auto ms-auto"}>
-                    <NerMeIndicator/>
+                    <NearMeIndicator/>
                 </div>
             </div>
         </div>
