@@ -5,16 +5,14 @@ import logging
 
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
+from qdrant_client import QdrantClient
 
 from qdrant_client.http.exceptions import UnexpectedResponse
+from qdrant_client.http.models import RecommendStrategy
+from sentence_transformers import SentenceTransformer
 from starlette.middleware.cors import CORSMiddleware
 
-from discovery import (
-    handle_text_search,
-    choose_random_points,
-    handle_negative_ids,
-    recommend_by_ids,
-)
+from discovery import AverageVectorStrategy, BestScoreStrategy
 from models import SearchQuery, Product
 
 import settings
@@ -32,6 +30,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Create a client to interact with Qdrant
+client = QdrantClient(
+    settings.QDRANT_URL,
+    api_key=settings.QDRANT_API_KEY,
+    prefer_grpc=True,
+)
+
+# Load the embeddings model
+model = SentenceTransformer(
+    "clip-ViT-B-32", device="cpu", cache_folder="./models_cache"
+)
+
+# Map each search strategy to the corresponding class
+strategy_mapping = {
+    RecommendStrategy.AVERAGE_VECTOR: AverageVectorStrategy,
+    RecommendStrategy.BEST_SCORE: BestScoreStrategy,
+}
+
 
 @app.post("/api/search")
 def search(search_query: SearchQuery) -> List[Product]:
@@ -40,29 +56,10 @@ def search(search_query: SearchQuery) -> List[Product]:
     :param search_query: search query parameters
     :return:
     """
-    positive = search_query.positive or []
-    negative = search_query.negative or []
-
     try:
-        if search_query.query:
-            # If a text query is provided, search for the products by the query
-            points = handle_text_search(search_query)
-        elif len(positive) == 0 and len(negative) == 0:
-            # If no ids are provided, return random products
-            points = choose_random_points(search_query)
-        elif len(positive) == 0 and len(negative) > 0:
-            # If only disliked products are provided, we cannot use the recommendation
-            # API directly, so it has to be handled separately
-            points = handle_negative_ids(search_query)
-        else:
-            # Search for the products similar to the liked ones and dissimilar to the
-            # disliked ones
-            points = recommend_by_ids(search_query)
-
-        return [
-            Product.from_point(point)
-            for point in points
-        ]
+        strategy_cls = strategy_mapping.get(search_query.strategy)
+        strategy = strategy_cls(model, client)
+        return strategy.handle(search_query)
     except UnexpectedResponse as e:
         # Handle the case when Qdrant returns an error and convert it to an exception
         # that FastAPI will understand and return to the client
