@@ -33,17 +33,20 @@ export interface ISearchState {
     results: ISearchResult[];
     filters: ISearchFilter[];
     location?: Nullable<ISearchLocation>;
+    newStrategy: boolean;
     removeFilter: (filter: ISearchFilter) => ISearchFilter[];
     addFilter: (product: ISearchResult, isPositive: boolean) => ISearchFilter[];
     clearFilters: () => ISearchFilter[];
     textSearch: (query: string|undefined) => void;
-    retrieveResults: (filters?: ISearchFilter[]|null, location?: ISearchLocation|null) => void;
+    retrieveResults: (filters?: ISearchFilter[]|null, location?: ISearchLocation|null, newStrategy?: boolean|null) => void;
     setLocation: (location: Nullable<ISearchLocation>) => void;
+    setNewStrategy: (value: boolean) => void;
 }
 
 export interface ISearchRequestBody {
     positive: string[];
     negative: string[];
+    strategy?: string;
     location?: ISearchLocation;
     query?: string;
     limit?: number;

@@ -5,6 +5,7 @@ export const SearchContextProvider = () => {
     const [results, setResults] = useState<ISearchResult[]>([]);
     const [filters, setFilters] = useState<ISearchFilter[]>([]);
     const [location, setLocation] = useState<ISearchLocation|null>(null);
+    const [newStrategy, setNewStrategy] = useState<boolean>(false);
 
     const _mapProductsProperties = (products: any[]): ISearchResult[] => {
         return products.map((product: any) => {
@@ -18,13 +19,14 @@ export const SearchContextProvider = () => {
         });
     }
 
-    const retrieveResults = (f: ISearchFilter[] = filters, l: ISearchLocation|null = location) => {
+    const retrieveResults = (f: ISearchFilter[] = filters, l: ISearchLocation|null = location, ns: boolean|null = newStrategy) => {
         const positiveIds = f.filter(f => f.isPositive).map(f => f.productId);
         const negativeIds = f.filter(f => !f.isPositive).map(f => f.productId);
 
         const body: ISearchRequestBody = {
             "positive": positiveIds,
             "negative": negativeIds,
+            "strategy": ns ? "best_score" : "average_vector",
         }
 
         if (l) {
@@ -116,11 +118,13 @@ export const SearchContextProvider = () => {
         results,
         filters,
         location,
+        newStrategy,
         addFilter,
         removeFilter,
         clearFilters,
         retrieveResults,
         textSearch,
         setLocation,
+        setNewStrategy,
     }
 };

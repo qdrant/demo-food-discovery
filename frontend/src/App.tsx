@@ -2,7 +2,7 @@ import "@tabler/core/dist/css/tabler.css";
 import "@tabler/core/dist/js/tabler.js";
 import './index.css';
 import React from "react";
-import {Header, RefreshButton} from "./components/Page";
+import {Header, RefreshButton, StrategySwitch} from "./components/Page";
 import {NearMeButton} from "./components/NearMeButton";
 import {TextSearchButton} from "./components/TextSearch";
 import {Filters, Results} from "./components/Search";
@@ -33,9 +33,18 @@ export default function App() {
                 <div className="page-body">
                     <div className="container-xl">
                         <Filters />
-                        <h2 className="page-title-lg">Recommendation results</h2>
-                        <p>Select food items you like and dislike to improve your search
-                            results.</p>
+
+                        <div className="row align-items-center">
+                            <div className="col">
+                                <h2 className="page-title-lg">Recommendation results</h2>
+                                <p>Select food items you like and dislike to improve your search
+                                    results.</p>
+                            </div>
+                            <div className="col-auto ms-auto">
+                                <StrategySwitch/>
+                            </div>
+                        </div>
+
                         <Results/>
                     </div>
                 </div>

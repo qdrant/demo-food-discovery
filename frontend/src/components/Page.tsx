@@ -46,3 +46,17 @@ export const RefreshButton = () => {
         </button>
     </div>
 };
+
+export const StrategySwitch = () => {
+    const {newStrategy, setNewStrategy, retrieveResults, filters, location} = useContext(SearchContext);
+
+    const handleSwitch = () => {
+        setNewStrategy(!newStrategy);
+        retrieveResults(filters, location, !newStrategy);
+    }
+
+    return <label className="form-check form-switch">
+        <input className="form-check-input" type="checkbox" onChange={handleSwitch} checked={newStrategy} />
+        <span className="form-check-label">New algorithm</span>
+    </label>
+}

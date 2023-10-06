@@ -1,6 +1,7 @@
 from typing import Optional, List, Union
 
 from pydantic import BaseModel, Field
+from qdrant_client.http.models import RecommendStrategy
 
 import settings
 
@@ -23,6 +24,7 @@ class SearchQuery(BaseModel):
     positive: Optional[List[ProductId]] = None
     negative: Optional[List[ProductId]] = None
     limit: int = Field(settings.DEFAULT_LIMIT, ge=1, le=settings.MAX_SEARCH_LIMIT)
+    strategy: RecommendStrategy = RecommendStrategy.BEST_SCORE
 
 
 class Restaurant(BaseModel):
