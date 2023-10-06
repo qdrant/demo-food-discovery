@@ -42,6 +42,7 @@ class Product(BaseModel):
     image_url: str
     restaurant: Restaurant
     payload: dict
+    score: float
 
     @classmethod
     def from_point(cls, point) -> "Product":
@@ -63,4 +64,5 @@ class Product(BaseModel):
             image_url=point.payload["image"],
             restaurant=restaurant,
             payload=point.payload,
+            score=point.score,
         )

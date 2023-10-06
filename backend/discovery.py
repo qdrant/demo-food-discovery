@@ -40,7 +40,7 @@ class BaseDiscoveryStrategy(abc.ABC):
         if search_query.query:
             # If a text query is provided, search for the products by the query
             points = self._handle_text_search(search_query)
-        elif len(positive) == 0 and len(negative) == 0:
+        elif len(positive) + len(negative) == 0:
             # If no ids are provided, return random products
             points = self._choose_random_points(search_query)
         else:
