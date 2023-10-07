@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "processing"
+version = "0.1.0"
+description = ""
+authors = ["Qdrant Team <team@qdrant.com>"]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.12"
+argparse = "^1.4.0"
+sentence_transformers = "^2.2.0"
+tqdm = "^4.65.0"
+npy-append-array = "^0.9.16"
+pillow = "^10.0.0"
+torch = "^2.0.1"
+qdrant-client = "^1.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
