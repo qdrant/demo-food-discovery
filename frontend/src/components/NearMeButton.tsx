@@ -4,7 +4,7 @@ import {SearchContext} from "../context/Search";
 import {Modal} from "./Modal";
 import {IconMapPinCheck, IconMapPinSearch} from "@tabler/icons-react";
 
-export const NerMeIndicator = () => {
+export const NearMeIndicator = () => {
     const {location, setLocation, filters, retrieveResults}: ISearchState = useContext(SearchContext);
 
     return (
