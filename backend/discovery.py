@@ -29,7 +29,19 @@ class BaseDiscoveryStrategy(abc.ABC):
         self.qdrant_client = qdrant_client
 
     def handle(self, search_query: SearchQuery) -> List[Product]:
-        raise NotImplementedError
+        positive = search_query.positive or []
+        negative = search_query.negative or []
+        queries = search_query.queries or []
+
+        if len(positive) + len(negative) + len(queries) == 0:
+            # If no ids are provided, return random products
+            points = self._choose_random_points(search_query)
+        else:
+            # Search for the products similar to the liked ones and dissimilar to the
+            # disliked ones
+            points = self._recommend(search_query)
+
+        return [Product.from_point(point) for point in points]
 
     def _choose_random_points(self, search_query: SearchQuery):
         """
@@ -113,26 +125,6 @@ class AverageVectorStrategy(BaseDiscoveryStrategy):
 
     See: https://qdrant.tech/documentation/concepts/search/#recommendation-api
     """
-
-    def handle(self, search_query: SearchQuery) -> List[Product]:
-        """
-        Perform the search operation based on the provided search query.
-        :param search_query:
-        :return:
-        """
-        positive = search_query.positive or []
-        negative = search_query.negative or []
-        queries = search_query.queries or []
-
-        if len(positive) + len(negative) + len(queries) == 0:
-            # If no ids are provided, return random products
-            points = self._choose_random_points(search_query)
-        else:
-            # Search for the products similar to the liked ones and dissimilar to the
-            # disliked ones
-            points = self._recommend(search_query)
-
-        return [Product.from_point(point) for point in points]
 
     def _recommend(self, search_query: SearchQuery):
         """
@@ -223,21 +215,6 @@ class BestScoreStrategy(BaseDiscoveryStrategy):
     A strategy based on the new recommendation API of Qdrant. It allows using a single
     negative example as well.
     """
-
-    def handle(self, search_query: SearchQuery) -> List[Product]:
-        positive = search_query.positive or []
-        negative = search_query.negative or []
-        queries = search_query.queries or []
-
-        if len(positive) + len(negative) + len(queries) == 0:
-            # If no ids are provided, return random products
-            points = self._choose_random_points(search_query)
-        else:
-            # Search for the products similar to the liked ones and dissimilar to the
-            # disliked ones
-            points = self._recommend(search_query)
-
-        return [Product.from_point(point) for point in points]
 
     def _recommend(self, search_query: SearchQuery):
         """
