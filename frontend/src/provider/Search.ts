@@ -5,7 +5,7 @@ export const SearchContextProvider = () => {
     const [results, setResults] = useState<ISearchResult[]>([]);
     const [filters, setFilters] = useState<ISearchFilter[]>([]);
     const [location, setLocation] = useState<ISearchLocation|null>(null);
-    const [newStrategy, setNewStrategy] = useState<boolean>(false);
+    const [newStrategy, setNewStrategy] = useState<boolean>(true);
 
     const _mapProductsProperties = (products: any[]): ISearchResult[] => {
         return products.map((product: any) => {
