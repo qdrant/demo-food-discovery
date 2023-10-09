@@ -19,10 +19,10 @@ class LocationFilter(Location):
 
 
 class SearchQuery(BaseModel):
-    query: Optional[str] = None
     location: Optional[LocationFilter] = None
     positive: Optional[List[ProductId]] = None
     negative: Optional[List[ProductId]] = None
+    queries: Optional[List[str]] = None
     limit: int = Field(settings.DEFAULT_LIMIT, ge=1, le=settings.MAX_SEARCH_LIMIT)
     strategy: RecommendStrategy = RecommendStrategy.BEST_SCORE
 

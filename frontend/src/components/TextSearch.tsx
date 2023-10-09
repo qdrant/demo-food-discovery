@@ -14,8 +14,8 @@ const TextSearchModal: React.FC<ITextSearchModal> = ({open, onClose}) => {
   const [query, setQuery] = useState("");
 
   const handleSubmit = () => {
-    searchState.clearFilters();
-    searchState.textSearch(query);
+    // Text query is always considered positive
+    searchState.retrieveResults(searchState.addTextFilter(query, true));
     if (open) onClose();
     setQuery("");
   }

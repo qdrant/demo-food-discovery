@@ -17,8 +17,10 @@ export interface ISearchResult {
     productRestaurant: ISearchRestaurant;
 }
 
-export interface ISearchFilter extends ISearchResult {
-    isPositive: boolean;
+export interface ISearchFilter {
+    product?: ISearchResult;
+    textQuery?: string;
+    isPositive?: boolean;
 }
 
 export interface ISearchLocation {
@@ -35,19 +37,19 @@ export interface ISearchState {
     location?: Nullable<ISearchLocation>;
     newStrategy: boolean;
     removeFilter: (filter: ISearchFilter) => ISearchFilter[];
-    addFilter: (product: ISearchResult, isPositive: boolean) => ISearchFilter[];
+    addProductFilter: (product: ISearchResult, isPositive: boolean) => ISearchFilter[];
+    addTextFilter: (query: string, isPositive: boolean) => ISearchFilter[];
     clearFilters: () => ISearchFilter[];
-    textSearch: (query: string|undefined) => void;
     retrieveResults: (filters?: ISearchFilter[]|null, location?: ISearchLocation|null, newStrategy?: boolean|null) => void;
     setLocation: (location: Nullable<ISearchLocation>) => void;
     setNewStrategy: (value: boolean) => void;
 }
 
 export interface ISearchRequestBody {
-    positive: string[];
-    negative: string[];
+    positive?: string[];
+    negative?: string[];
+    queries?: string[];
     strategy?: string;
     location?: ISearchLocation;
-    query?: string;
     limit?: number;
 }
