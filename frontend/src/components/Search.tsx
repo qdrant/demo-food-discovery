@@ -33,17 +33,21 @@ const Filter = () => {
         searchState.retrieveResults(searchState.removeFilter(filter));
     }
 
-    const filterClass = filter.textQuery ? "bg-gray-lt" : filter.isPositive ? "bg-green-lt" : "bg-red-lt";
+    const filterClass = filter.textQuery ? "bg-white" : filter.isPositive ? "bg-green-lt" : "bg-red-lt";
     const filterModal = filter.product ? <InfoModal info={filter.product} open={openInfoModal} onClose={() => setOpenInfoModal(false)}/> : <></>;
     const filterName = filter.product ? filter.product.productName : filter.textQuery;
-    const filterImage = filter.product ? filter.product.productImageUrl : "/placeholder.png";
+    const filterImage = filter.product ? filter.product.productImageUrl : "/placeholder.svg";
+    const filterDescription = filter.textQuery && "Text search";
     return (
         <div className="col-sm-2">
             <div className={`card ${filterClass}`}>
                 <div className="img-responsive img-responsive-21x9 card-img-top"
                      style={{backgroundImage: `url(${filterImage})`}}></div>
                 <div className="card-body cursor-pointer" onClick={() => setOpenInfoModal(!!filter.product)}>
-                    <h3 className="small card-title">{filterName}</h3>
+                    <h3 className="small card-title">
+                        {filterName}<br/>
+                        {filterDescription && <span className="text-muted small">{filterDescription}</span>}
+                    </h3>
                 </div>
                 <div className="ribbon ribbon-top bg-orange cursor-pointer" onClick={handleRemoveFilter}>
                     <button className="switch-icon h-50 remove-filter"
