@@ -1,6 +1,7 @@
 from typing import Optional, List, Union
 
 from pydantic import BaseModel, Field
+from qdrant_client.http.models import RecommendStrategy
 
 import settings
 
@@ -18,11 +19,12 @@ class LocationFilter(Location):
 
 
 class SearchQuery(BaseModel):
-    query: Optional[str] = None
     location: Optional[LocationFilter] = None
     positive: Optional[List[ProductId]] = None
     negative: Optional[List[ProductId]] = None
+    queries: Optional[List[str]] = None
     limit: int = Field(settings.DEFAULT_LIMIT, ge=1, le=settings.MAX_SEARCH_LIMIT)
+    strategy: RecommendStrategy = RecommendStrategy.BEST_SCORE
 
 
 class Restaurant(BaseModel):
@@ -40,6 +42,7 @@ class Product(BaseModel):
     image_url: str
     restaurant: Restaurant
     payload: dict
+    score: float
 
     @classmethod
     def from_point(cls, point) -> "Product":
@@ -61,4 +64,5 @@ class Product(BaseModel):
             image_url=point.payload["image"],
             restaurant=restaurant,
             payload=point.payload,
+            score=point.score,
         )

@@ -33,14 +33,17 @@ const Filter = () => {
         searchState.retrieveResults(searchState.removeFilter(filter));
     }
 
-    const filterClass = filter.isPositive ? "bg-green-lt" : "bg-red-lt";
+    const filterClass = filter.textQuery ? "bg-gray-lt" : filter.isPositive ? "bg-green-lt" : "bg-red-lt";
+    const filterModal = filter.product ? <InfoModal info={filter.product} open={openInfoModal} onClose={() => setOpenInfoModal(false)}/> : <></>;
+    const filterName = filter.product ? filter.product.productName : filter.textQuery;
+    const filterImage = filter.product ? filter.product.productImageUrl : "/placeholder.png";
     return (
         <div className="col-sm-2">
             <div className={`card ${filterClass}`}>
                 <div className="img-responsive img-responsive-21x9 card-img-top"
-                     style={{backgroundImage: `url(${filter.productImageUrl})`}}></div>
-                <div className="card-body cursor-pointer" onClick={() => setOpenInfoModal(true)}>
-                    <h3 className="small card-title">{filter.productName}</h3>
+                     style={{backgroundImage: `url(${filterImage})`}}></div>
+                <div className="card-body cursor-pointer" onClick={() => setOpenInfoModal(!!filter.product)}>
+                    <h3 className="small card-title">{filterName}</h3>
                 </div>
                 <div className="ribbon ribbon-top bg-orange cursor-pointer" onClick={handleRemoveFilter}>
                     <button className="switch-icon h-50 remove-filter"
@@ -55,7 +58,7 @@ const Filter = () => {
                     </button>
                 </div>
             </div>
-            <InfoModal info={filter} open={openInfoModal} onClose={() => setOpenInfoModal(false)}/>
+            {filterModal}
         </div>
     )
 }
@@ -98,7 +101,7 @@ const Result = () => {
     const [openInfoModal, setOpenInfoModal] = React.useState(false);
 
     const handleAddFilter = (product: ISearchResult, isPositive: boolean) => {
-        const filters = searchState.addFilter(product, isPositive);
+        const filters = searchState.addProductFilter(product, isPositive);
         searchState.retrieveResults(filters);
     };
 
