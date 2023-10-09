@@ -28,6 +28,9 @@ class BaseDiscoveryStrategy(abc.ABC):
         self.embedding_model = embedding_model
         self.qdrant_client = qdrant_client
 
+    def handle(self, search_query: SearchQuery) -> List[Product]:
+        raise NotImplementedError
+
     def _choose_random_points(self, search_query: SearchQuery):
         """
         Choose some random points from the vector space and then search for the nearest
@@ -77,35 +80,8 @@ class BaseDiscoveryStrategy(abc.ABC):
         points = itertools.chain.from_iterable(results)
         return points
 
-    def _recommend_by_ids(self, search_query: SearchQuery):
-        """
-        Use Qdrant Recommendation API to find the nearest neighbors of the liked and
-        disliked items.
-
-        Internally, this function uses the group recommendation API to find the items coming
-        from different restaurants. Records are grouped by `cafe.slug` field, which is a
-        unique identifier of the restaurant.
-
-        :param search_query: search query
-        :return:
-        """
-        query_filter = (
-            self._create_location_filter(search_query.location)
-            if search_query.location is not None
-            else None
-        )
-        response = self.qdrant_client.recommend_groups(
-            settings.QDRANT_COLLECTION,
-            positive=search_query.positive,
-            negative=search_query.negative,
-            strategy=search_query.strategy,
-            group_by=settings.GROUP_BY_FIELD,
-            query_filter=query_filter,
-            limit=search_query.limit,
-        )
-        return list(
-            itertools.chain.from_iterable([group.hits for group in response.groups])
-        )
+    def _recommend(self, search_query: SearchQuery):
+        raise NotImplementedError
 
     def _create_location_filter(self, location: Location) -> models.Filter:
         """
@@ -151,44 +127,28 @@ class AverageVectorStrategy(BaseDiscoveryStrategy):
         if len(positive) + len(negative) + len(queries) == 0:
             # If no ids are provided, return random products
             points = self._choose_random_points(search_query)
-        elif len(positive) + len(negative) > 0:
+        else:
             # Search for the products similar to the liked ones and dissimilar to the
             # disliked ones
-            points = self._recommend_by_ids(search_query)
-        else:
-            # If a text query is provided, search for the products by the query
-            points = self._handle_text_search(search_query)
+            points = self._recommend(search_query)
 
         return [Product.from_point(point) for point in points]
 
-    def _handle_text_search(self, search_query: SearchQuery):
+    def _recommend(self, search_query: SearchQuery):
         """
-        Perform text search in the collection. Internally it uses the group search API of
-        Qdrant and groups the results by the `cafe.slug` field. It allows to retrieve more
-        diverse results. If there are multiple queries provided, their vectors are averaged
-        and used as a single query vector.
+        Use Qdrant Recommendation API to find the nearest neighbors of the liked and
+        disliked items.
+
+        Internally, this function uses the group recommendation API to find the items coming
+        from different restaurants. Records are grouped by `cafe.slug` field, which is a
+        unique identifier of the restaurant.
+
         :param search_query: search query
         :return:
         """
-        query_vector = self.embedding_model.encode(search_query.queries).mean(axis=0)
-        query_filter = (
-            self._create_location_filter(search_query.location)
-            if search_query.location is not None
-            else None
-        )
-        response = self.qdrant_client.search_groups(
-            settings.QDRANT_COLLECTION,
-            query_vector=query_vector,
-            group_by=settings.GROUP_BY_FIELD,
-            query_filter=query_filter,
-            limit=search_query.limit,
-        )
-        return list(
-            itertools.chain.from_iterable([group.hits for group in response.groups])
-        )
-
-    def _recommend_by_ids(self, search_query: SearchQuery):
-        positive = search_query.positive or []
+        queries = search_query.queries or []
+        query_vectors = self.embedding_model.encode(queries).tolist()
+        positive = (search_query.positive or []) + query_vectors
         negative = search_query.negative or []
 
         if len(positive) == 0 and len(negative) > 0:
@@ -196,9 +156,23 @@ class AverageVectorStrategy(BaseDiscoveryStrategy):
             # API directly, so it has to be handled separately
             return self._handle_negative_ids(search_query)
 
-        # If there is at least one liked product, we can use the recommendation API
-        # directly with the average vector strategy
-        return super()._recommend_by_ids(search_query)
+        query_filter = (
+            self._create_location_filter(search_query.location)
+            if search_query.location is not None
+            else None
+        )
+        response = self.qdrant_client.recommend_groups(
+            settings.QDRANT_COLLECTION,
+            positive=positive,
+            negative=negative,
+            strategy=search_query.strategy,
+            group_by=settings.GROUP_BY_FIELD,
+            query_filter=query_filter,
+            limit=search_query.limit,
+        )
+        return list(
+            itertools.chain.from_iterable([group.hits for group in response.groups])
+        )
 
     def _handle_negative_ids(self, search_query: SearchQuery):
         """
