@@ -19,7 +19,7 @@ export default function App() {
     document.body.classList.add("p-lg-5")
 
     // Set page title
-    document.title = "Food Discover with Qdrant"
+    document.title = "Food Discovery with Qdrant"
 
     // Initialize search state via context provider
     const searchState: ISearchState = SearchContextProvider();
