@@ -34,8 +34,6 @@ model. We only vectorize text queries during the search, but mostly use the same
 embeddings that were used during the indexing. Thus, there might no vectorization overhead 
 during the search, what makes it very fast.
 
-https://github.com/qdrant/demo-food-discovery/assets/2649301/b15ebfc6-3484-4484-bb94-00aaf47a4396
-
 ## Architecture
 
 ![Architecture diagram](images/architecture-diagram.png)
