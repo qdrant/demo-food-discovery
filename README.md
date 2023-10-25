@@ -1,5 +1,10 @@
 # Food Discovery with Qdrant
 
+## Online version
+
+If you want to start with having a look at a running application, it is available here:
+**[https://food-discovery.qdrant.tech/](https://food-discovery.qdrant.tech/)**
+
 ## Description
 
 This is a demo project for the [Qdrant](https://qdrant.tech) vector search engine. It 
