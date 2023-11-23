@@ -1,6 +1,6 @@
 # Food Discovery with Qdrant
 
-## Online version
+## Online version <a href="https://replit.com/@qdrant/food-discovery-ai"><img align="right" src="https://replit.com/badge/github/qdrant/demo-food-discovery" alt="Run on Repl.it"></a>
 
 If you want to start with having a look at a running application, it is available here:
 **[https://food-discovery.qdrant.tech/](https://food-discovery.qdrant.tech/)**
