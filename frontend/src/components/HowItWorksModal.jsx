@@ -37,8 +37,8 @@ function HowItWorksModal({ onClose }) {
               <strong>Embeddings</strong>
 
               <p>
-                Food descriptions are converted into vectors in your browser
-                with a sentence-transformer model.
+                Dish images are indexed as CLIP embeddings ahead of time. Your
+                text query is vectorized with the same model at search time.
               </p>
             </div>
 
@@ -50,8 +50,7 @@ function HowItWorksModal({ onClose }) {
               <strong>Vector search</strong>
 
               <p>
-                Cosine similarity finds the closest foods, the same math a
-                Qdrant collection uses.
+                Qdrant searches the collection for the nearest dish vectors.
               </p>
             </div>
 
@@ -63,7 +62,7 @@ function HowItWorksModal({ onClose }) {
               <strong>Taste profile</strong>
 
               <p>
-                Likes and skips update recommendations based on what you prefer.
+                Likes and dislikes steer the next set of results.
               </p>
             </div>
           </div>
@@ -85,26 +84,18 @@ function HowItWorksModal({ onClose }) {
                 <span>Recommendations</span>
 
                 <p>
-                  When you like food cards, the app averages their vectors into
-                  a taste vector and finds the nearest foods.
+                  With the average-vector strategy, likes are averaged into one
+                  taste vector. Best-score, the default, scores each like
+                  separately and keeps the strongest match.
                 </p>
               </div>
 
               <div className="mode-card">
-                <span>Skips</span>
+                <span>Dislikes</span>
 
                 <p>
-                  Disliked foods are excluded from the recommendation feed so
-                  the app can keep refining what it shows.
-                </p>
-              </div>
-
-              <div className="mode-card">
-                <span>Local-first</span>
-
-                <p>
-                  The demo starts with a local JSON dataset, making it easy to
-                  run, test, and deploy.
+                  Dislikes push the search away from those vectors. They are
+                  negative examples, not a filter.
                 </p>
               </div>
             </div>

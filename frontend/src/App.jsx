@@ -46,10 +46,12 @@ function App() {
   const [location, setLocation] = useState(null); // { name, latitude, longitude, radius_km } | null
   const [locating, setLocating] = useState(false);
   const [locationNote, setLocationNote] = useState("");
+  const [error, setError] = useState("");
 
   async function runSearch(liked, disliked, text, strategy, loc = location) {
     setLoading(true);
     setHasSearched(true);
+    setError("");
     try {
       const results = await search({
         positive: liked.map((f) => f.id),
@@ -63,6 +65,9 @@ function App() {
       setFoods(results);
     } catch (err) {
       console.error(err);
+      // Without this the previous results stay on screen and a dead backend
+      // looks like a working demo showing stale cards.
+      setError("Search is unavailable right now. Check the API and try again.");
     } finally {
       setLoading(false);
     }
@@ -221,8 +226,9 @@ function App() {
           <h1>Food Discovery</h1>
 
           <p>
-            Search by craving, then like or dislike dishes. Qdrant's Discovery
-            API refines recommendations from your taste in real time.
+            Search by craving, then like or dislike dishes. Qdrant's
+            Recommendation API refines results from your likes and dislikes in
+            real time.
           </p>
 
           <SearchBar
@@ -304,6 +310,8 @@ function App() {
             </div>
           )}
         </div>
+
+        {error && <div className="error-state">{error}</div>}
 
         {foods.length > 0 ? (
           <div className={loading ? "is-loading" : ""}>
