@@ -108,8 +108,6 @@ At this point, you should have a running demo. However, it does not contain any 
 but the web application is already available at http://localhost:8001. You can open it
 in your browser.
 
-![Empty demo](images/empty-demo.png)
-
 Each point in the collection represents a dish with a single image. The image is
 represented as a vector of 512 float numbers. There is also a JSON payload attached to
 each point, which looks similar to this:
@@ -181,8 +179,6 @@ curl -X POST \
 
 Once your demo is up and running, you can open it in your browser at 
 http://localhost:8001 and finally start using it.
-
-![Working demo](images/working-demo.png)
 
 By clicking the buttons, you can navigate through the search results and explore your
 options by selecting the dishes you like and discarding the ones you don't.
