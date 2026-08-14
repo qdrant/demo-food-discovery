@@ -1,11 +1,12 @@
 import os
+from collections import defaultdict
 from typing import List
 
 import logging
 
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
-from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient, models
 
 from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.http.models import RecommendStrategy
@@ -65,6 +66,41 @@ def search(search_query: SearchQuery) -> List[Product]:
         # that FastAPI will understand and return to the client
         logger.error("Could not perform search: %s", e)
         raise HTTPException(status_code=500, detail=e.reason_phrase)
+
+
+# Cache the sampled coverage map — it's static-ish and the sample is a bit costly.
+_locations_cache = None
+
+
+@app.get("/api/locations")
+def locations(sample: int = 3000):
+    """A coarse map of where the dataset actually has dishes: sample random points
+    and bucket their restaurant coordinates into a ~0.1 degree grid. Lets the
+    frontend draw an honest coverage preview instead of guessing cities."""
+    global _locations_cache
+    if _locations_cache is not None:
+        return _locations_cache
+    try:
+        res = client.query_points(
+            collection_name=settings.QDRANT_COLLECTION,
+            query=models.SampleQuery(sample=models.Sample.RANDOM),
+            limit=max(100, min(sample, 5000)),
+            with_payload=models.PayloadSelectorInclude(include=["cafe.location"]),
+            with_vectors=False,
+        )
+        cells = defaultdict(int)
+        for p in res.points:
+            loc = ((p.payload or {}).get("cafe") or {}).get("location") or {}
+            lat, lon = loc.get("lat"), loc.get("lon")
+            if lat is None or lon is None:
+                continue
+            cells[(round(lat, 1), round(lon, 1))] += 1
+        points = [{"lat": k[0], "lon": k[1], "count": v} for k, v in cells.items()]
+        _locations_cache = {"points": points, "sampled": len(res.points)}
+        return _locations_cache
+    except Exception as e:
+        logger.error("Could not sample locations: %s", e)
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {str(e)[:200]}")
 
 
 # Mount the static files directory once the search endpoint is defined

@@ -23,8 +23,8 @@ simplicity, we use the `clip-ViT-B-32` model available in the
 library.
 
 The demo uses the [FastAPI](https://fastapi.tiangolo.com/) framework for the backend and 
-[React](https://reactjs.org/) for the frontend, with [Tabler](https://tabler.io/)
-web application UI kit. Qdrant [Recommendation API](
+[React](https://reactjs.org/) with [Vite](https://vite.dev/) for the frontend, styled with
+the Qdrant design system. Qdrant [Recommendation API](
 https://qdrant.tech/documentation/concepts/search/#recommendation-api) 
 is used internally to find some other items that are visually similar to the liked ones 
 and dissimilar to the disliked ones. All the components are enclosed in Docker Compose
@@ -108,8 +108,6 @@ At this point, you should have a running demo. However, it does not contain any 
 but the web application is already available at http://localhost:8001. You can open it
 in your browser.
 
-![Empty demo](images/empty-demo.png)
-
 Each point in the collection represents a dish with a single image. The image is
 represented as a vector of 512 float numbers. There is also a JSON payload attached to
 each point, which looks similar to this:
@@ -182,17 +180,36 @@ curl -X POST \
 Once your demo is up and running, you can open it in your browser at 
 http://localhost:8001 and finally start using it.
 
-![Working demo](images/working-demo.png)
-
 By clicking the buttons, you can navigate through the search results and explore your
 options by selecting the dishes you like and discarding the ones you don't.
+
+### Frontend
+
+The frontend is a Vite app in `frontend/`. To work on it on its own:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+| Variable | Purpose |
+|-|-|
+| `VITE_API_BASE` | Origin of the backend API. Leave unset when the backend serves the frontend. A Vercel deploy needs this, because the API is not co-hosted. |
+| `VITE_MOCK` | Set to `1` to render sample data with no backend running. |
+
+### API
+
+| Endpoint | Purpose |
+|-|-|
+| `POST /api/search` | Positive and negative example ids, optional text queries and location, and a `best_score` or `average_vector` strategy. |
+| `GET /api/locations` | A cached random sample of dataset coordinates, used to draw the coverage map so the map only offers places that have data. |
 
 ## Links
 
 Some of the links to the resources that were useful during the development:
 
 - https://www.erraticbits.ca/post/2021/fastapi/
-- https://tabler.io/docs/getting-started
 - https://qdrant.tech/documentation/concepts/snapshots/
 
 ## Further steps

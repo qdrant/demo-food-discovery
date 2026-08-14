@@ -1,107 +1,35 @@
-html {
-  /* prevents page twitching when scroll visibility changes */
-  margin-left: calc(100vw - 100%);
-
-  scrollbar-color: var(--tblr-body-bg) transparent;
-}
-body::-webkit-scrollbar {
-    width: 0.5rem;
-}
-body::-webkit-scrollbar-thumb {
-  background-color: var(--tblr-body-bg);
-  border: 0;
-}
-body::-webkit-scrollbar-track {
-  background-color: transparent;
-  border: 0;
-}
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+:root {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+html {
+  min-width: 320px;
+  min-height: 100%;
 }
 
-.modal-open {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  overflow: hidden;
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
 }
 
-div, p, h1, h2, h3, h4, h5, h6, span, a, button, label, input, select, textarea, .text {
-  font-family: 'Roboto', sans-serif;
-  color: #06153D !important;
+#root {
+  min-height: 100vh;
 }
 
-.text-muted {
-  color: #6A80BD !important;
-}
-
-body.layout-boxed {
-  background-color: #06153D;
-  background-image: linear-gradient(180deg, #06153D 0%, #1F3266 94%);
-}
-
-body.layout-boxed .page, .card {
-  background-color: #F2F6FF;
-}
-
-.bg-green {
-  background-color: #12B765 !important;
-}
-
-.bg-green-lt {
-  background-color: #D1FADF !important;
-  color: #085232 !important;
-}
-.bg-green-lt .card-title {
-  color: #085232 !important;
-}
-
-.bg-red {
-  background-color: #F03030 !important;
-}
-
-.bg-red-lt {
-  background-color: #FED6D6 !important;
-  color: #661414 !important;
-}
-.bg-red-lt .card-title {
-  color: #661414 !important;
-}
-
-.bg-orange {
-  background-color: #F5870A !important;
-}
-
-.bg-purple {
-  background-color: #724CEF !important;
-}
-
-.bg-blue {
-  background-color: #148BF4 !important;
-}
-
-.bg-teal {
-  background-color: #009999 !important;
-}
-
-.btn-primary {
-  background-color: #5069AD !important;
-  border-color: #5069AD !important;
-  color: #FFFFFF !important;
-}
-
-.btn-link {
-  color: #5069AD !important;
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
