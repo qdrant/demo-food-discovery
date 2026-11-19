@@ -16,7 +16,7 @@ you might not know precisely what you want, but want to see some options and exp
 them to find something interesting.**
 
 The demo is based on the [Wolt](https://wolt.com/) dataset of dishes. It contains 
-over 2M images of dishes from different restaurants. The images are vectorized with
+about 1.7M images of dishes from different restaurants. The images are vectorized with
 the [CLIP](https://openai.com/blog/clip/) model and indexed in Qdrant. For the 
 simplicity, we use the `clip-ViT-B-32` model available in the 
 [Sentence-Transformers](https://www.sbert.net/examples/applications/image-search/README.html)
@@ -136,8 +136,8 @@ import into your Qdrant instance.
 
 Qdrant documentation describes how to import a snapshot into a Qdrant instance. We are
 going to [recover via API](https://qdrant.tech/documentation/concepts/snapshots/#recover-via-api).
-First of all, we need to download the snapshot from [GCP bucket](https://storage.googleapis.com/common-datasets-snapshots/wolt-clip-ViT-B-32.snapshot). 
-Let's assume it was downloaded to `/tmp/wolt-clip-ViT-B-32.snapshot`. You can use the 
+First of all, we need to download the [snapshot](https://snapshots.qdrant.io/wolt-clip-2108082541245612-2026-06-04-09-56-17.snapshot)
+and save it as `/tmp/wolt-clip-ViT-B-32.snapshot`. You can use the 
 following command to import the snapshot:
 
 ##### Local Qdrant instance
